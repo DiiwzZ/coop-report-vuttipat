@@ -940,8 +940,41 @@
       overflow:hidden;
     }
     .aw-sec-img img { width:100%; display:block; }
+    /* Safari / browser chrome elements */
+    .aw-main-float-inner {
+      display:flex; flex-direction:column; will-change:transform;
+    }
+    .aw-safari-chrome {
+      display:flex; align-items:center; gap:13px; flex-shrink:0;
+      padding:9px 18px;
+      background:linear-gradient(to bottom, #f7f7f7, #ebebeb);
+      border-bottom:1px solid rgba(0,0,0,.09);
+    }
+    .aw-safari-dots { display:flex; gap:6px; flex-shrink:0; }
+    .aw-safari-dots span {
+      display:block; width:11px; height:11px; border-radius:50%;
+      box-shadow:0 0 0 0.5px rgba(0,0,0,.12);
+    }
+    .aw-safari-dots .dot-red { background:#FF5F57; }
+    .aw-safari-dots .dot-yel { background:#FEBC2E; }
+    .aw-safari-dots .dot-grn { background:#28C840; }
+    .aw-safari-bar {
+      flex:1; background:rgba(255,255,255,.9);
+      border:1px solid rgba(0,0,0,.07); border-radius:6px;
+      padding:4px 14px;
+      font-size:11px; font-weight:400; color:rgba(25,22,89,.38);
+      font-family:var(--f); text-align:center; letter-spacing:.01em;
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    }
+    .aw-safari-viewport { overflow:hidden; }
+    .aw-safari-viewport img {
+      width:100%; display:block;
+      max-height:540px; object-fit:cover; object-position:top;
+    }
+    .aw-sec-float-inner { will-change:transform; }
     @media print {
       .aw-sec-img { position:static; width:46%; margin-top:14px; border:1px solid var(--navy-06); }
+      .aw-safari-chrome { display:none; }
     }
 
     /* ==========================================
@@ -973,8 +1006,20 @@
     }
     .ph-icon { font-size:28px; opacity:.55; }
     .ph-lbl  { font-size:15px; color:rgba(50,210,180,.65); text-align:center; padding:0 14px; }
+    /* Float inner + spotlight overlay */
+    .fb-float-inner {
+      width:100%; display:flex; flex-direction:column;
+      align-items:center; will-change:transform;
+    }
+    .fb-highlight-overlay {
+      position:absolute; inset:0; pointer-events:none;
+      z-index:3; border-radius:16px;
+      opacity:0; transition:opacity .3s ease;
+    }
     @media print {
       .fb-card { box-shadow:none; border:1px solid var(--navy-06); }
+      .fb-float-inner { animation:none !important; transform:none !important; }
+      .fb-highlight-overlay { display:none; }
     }
 
     /* ==========================================
@@ -1837,7 +1882,50 @@
       animation: bc-bob-a   3.4s ease-in-out infinite -0.7s;
     }
 
-    /* ── 12. Card hover 3D — Slides 3 & 4 ─────────────────────────────
+    /* ── 12. Slide 9 — Safari mockup idle float ───────────────────────── */
+    @keyframes aw-float-main {
+      0%, 100% { transform: translateY(0px)  rotate( 0.00deg); }
+      45%       { transform: translateY(-8px)  rotate( 0.25deg); }
+    }
+    @keyframes aw-float-sec {
+      0%, 100% { transform: translateY(0px)  rotate( 0.00deg); }
+      40%       { transform: translateY(-10px) rotate(-0.40deg); }
+    }
+    body:not(.export-mode) #s9.visible .aw-main-float-inner {
+      animation: aw-float-main 5.2s ease-in-out infinite;
+    }
+    body:not(.export-mode) #s9.visible .aw-sec-float-inner {
+      animation: aw-float-sec 4.1s ease-in-out infinite -1.8s;
+    }
+
+    /* ── 13. Slide 10 — Poster card idle float + center prominence ─────── */
+    @keyframes fb-poster-a {
+      0%, 100% { transform: translateY(0px)  rotate( 0.00deg); }
+      50%       { transform: translateY(-8px)  rotate( 0.35deg); }
+    }
+    @keyframes fb-poster-b {
+      0%, 100% { transform: translateY(0px)  rotate( 0.00deg); }
+      45%       { transform: translateY(-10px) rotate(-0.30deg); }
+    }
+    body:not(.export-mode) #s10.visible .fb-card:nth-child(1) .fb-float-inner {
+      animation: fb-poster-a 5.0s ease-in-out infinite;
+    }
+    body:not(.export-mode) #s10.visible .fb-card:nth-child(2) .fb-float-inner {
+      animation: fb-poster-b 6.0s ease-in-out infinite -1.5s;
+    }
+    body:not(.export-mode) #s10.visible .fb-card:nth-child(3) .fb-float-inner {
+      animation: fb-poster-a 4.5s ease-in-out infinite -2.8s;
+    }
+    /* Center card subtle elevation in presentation */
+    body:not(.export-mode) #s10 .fb-card:nth-child(2) {
+      box-shadow:
+        0 18px 56px rgba(25,22,89,.14),
+        0 4px 16px rgba(25,22,89,.07),
+        0 0 0 1.5px rgba(50,210,180,.12);
+      position: relative; z-index: 2;
+    }
+
+    /* ── 14. Card hover 3D — Slides 3 & 4 ─────────────────────────────
        Lift + scale + mint glow are applied as inline style by JS so
        they compose cleanly with the per-card --tilt/--lift reveal
        transform. The 3D mouse-tracking tilt runs on .bc-float-inner.
@@ -1866,9 +1954,13 @@
       body:not(.export-mode) #s15.visible .sw-center,
       body:not(.export-mode) #s3.visible .bc-card,
       body:not(.export-mode) #s3.visible .bc-float-inner,
-      body:not(.export-mode) #s4.visible .bc-float-inner { animation:none !important; }
+      body:not(.export-mode) #s4.visible .bc-float-inner,
+      body:not(.export-mode) #s9.visible .aw-main-float-inner,
+      body:not(.export-mode) #s9.visible .aw-sec-float-inner,
+      body:not(.export-mode) #s10.visible .fb-float-inner { animation:none !important; }
       body:not(.export-mode) #s3 .bc-card,
       body:not(.export-mode) #s4 .bc-card { cursor:default !important; }
+      .fb-highlight-overlay { opacity:0 !important; transition:none !important; }
       .prs-word { opacity:1 !important; transform:none !important; transition:none !important; }
       body:not(.export-mode) .vd-phone.is-reel,
       body:not(.export-mode) .vd-phone.is-tiktok { transition:none !important; }
@@ -2326,15 +2418,29 @@
         </div>
         <div class="aw-right">
           <div class="aw-mockup-wrap reveal">
-            <!-- Main browser mockup — large, prominent -->
+            <!-- Main browser mockup — Safari chrome frame -->
             <div class="aw-main-img">
-              <img src="assets/articles/article-website.png" alt="Screenshot บทความบน admissionpremium.com"
-                   onerror="this.style.display='none'">
+              <div class="aw-main-float-inner">
+                <div class="aw-safari-chrome">
+                  <div class="aw-safari-dots">
+                    <span class="dot-red"></span>
+                    <span class="dot-yel"></span>
+                    <span class="dot-grn"></span>
+                  </div>
+                  <div class="aw-safari-bar">admissionpremium.com</div>
+                </div>
+                <div class="aw-safari-viewport">
+                  <img src="assets/articles/article-website.png" alt="Screenshot บทความบน admissionpremium.com"
+                       onerror="this.style.display='none'">
+                </div>
+              </div>
             </div>
             <!-- Secondary preview — smaller, overlapping lower-left -->
             <div class="aw-sec-img" style="transition-delay:.18s">
-              <img src="assets/articles/article-website2.png" alt="Screenshot website บทความ 2"
-                   onerror="this.style.display='none'">
+              <div class="aw-sec-float-inner">
+                <img src="assets/articles/article-website2.png" alt="Screenshot website บทความ 2"
+                     onerror="this.style.display='none'">
+              </div>
             </div>
           </div>
         </div>
@@ -2366,19 +2472,28 @@
           <div class="s-label reveal">ตัวอย่างผลงาน</div>
           <div class="fb-cards reveal">
             <div class="fb-card">
-              <img src="assets/facebook-posts/fb-post-01.png" alt="Infographic Post 1" class="ph-asset"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-              <div class="ph-lbl" style="display:none">[ใส่ screenshot<br>Infographic 1]</div>
+              <div class="fb-float-inner">
+                <img src="assets/facebook-posts/fb-post-01.png" alt="Infographic Post 1" class="ph-asset"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+                <div class="ph-lbl" style="display:none">[ใส่ screenshot<br>Infographic 1]</div>
+              </div>
+              <div class="fb-highlight-overlay"></div>
             </div>
             <div class="fb-card">
-              <img src="assets/facebook-posts/fb-post-02.png" alt="Infographic Post 2" class="ph-asset"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-              <div class="ph-lbl" style="display:none">[ใส่ screenshot<br>Infographic 2]</div>
+              <div class="fb-float-inner">
+                <img src="assets/facebook-posts/fb-post-02.png" alt="Infographic Post 2" class="ph-asset"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+                <div class="ph-lbl" style="display:none">[ใส่ screenshot<br>Infographic 2]</div>
+              </div>
+              <div class="fb-highlight-overlay"></div>
             </div>
             <div class="fb-card">
-              <img src="assets/facebook-posts/fb-post-03.png" alt="Infographic Post 3" class="ph-asset"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-              <div class="ph-lbl" style="display:none">[ใส่ screenshot<br>Infographic 3]</div>
+              <div class="fb-float-inner">
+                <img src="assets/facebook-posts/fb-post-03.png" alt="Infographic Post 3" class="ph-asset"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+                <div class="ph-lbl" style="display:none">[ใส่ screenshot<br>Infographic 3]</div>
+              </div>
+              <div class="fb-highlight-overlay"></div>
             </div>
           </div>
         </div>
@@ -3391,6 +3506,191 @@ const deck = new Deck();
       /* tilt lerps back to 0 in the rAF loop */
       if (!rafId) rafId = requestAnimationFrame(tick);
     });
+  });
+})();
+
+/* ================================================
+   SLIDE 9 — Safari mockup hover (lift + glow + 3D tilt)
+   hostEl  = outer frame (.aw-main-img / .aw-sec-img)
+   innerEl = float wrapper  (.aw-main-float-inner / .aw-sec-float-inner)
+   ================================================ */
+(function initS9Hover() {
+  var isExport     = document.body.classList.contains('export-mode');
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (isExport || reducedMotion) return;
+
+  var EASE_IN  = 'cubic-bezier(0.34,1.56,0.64,1)';
+  var EASE_OUT = 'cubic-bezier(0.16,1,0.3,1)';
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function attach(hostEl, innerEl, opts) {
+    var MAX_TILT  = opts.maxTilt;
+    var LIFT_PX   = opts.liftPx;
+    var SCALE_VAL = opts.scale;
+    var isHovering = false;
+    var rx = 0, ry = 0, trx = 0, try_ = 0;
+    var rafId = null;
+
+    function tick() {
+      rx = lerp(rx, trx, 0.12);
+      ry = lerp(ry, try_, 0.12);
+      innerEl.style.transform =
+        'perspective(800px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg)';
+      var settled = !isHovering && Math.abs(rx) < 0.04 && Math.abs(ry) < 0.04;
+      if (settled) {
+        innerEl.style.transform = '';
+        innerEl.style.animationPlayState = '';
+        rafId = null;
+      } else {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    hostEl.addEventListener('mouseenter', function() {
+      isHovering = true;
+      innerEl.style.animationPlayState = 'paused';
+      hostEl.style.transition =
+        'transform 0.38s ' + EASE_IN + ' 0s,' +
+        'box-shadow 0.30s ' + EASE_OUT + ' 0s';
+      hostEl.style.transform  = 'translateY(' + (-LIFT_PX) + 'px) scale(' + SCALE_VAL + ')';
+      hostEl.style.boxShadow  = opts.shadowHover;
+      hostEl.style.zIndex     = '20';
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    hostEl.addEventListener('mousemove', function(e) {
+      var rect = hostEl.getBoundingClientRect();
+      var x    = (e.clientX - rect.left) / rect.width  - 0.5;
+      var y    = (e.clientY - rect.top)  / rect.height - 0.5;
+      trx  = Math.max(-MAX_TILT, Math.min(MAX_TILT, -y * MAX_TILT * 2));
+      try_ = Math.max(-MAX_TILT, Math.min(MAX_TILT,  x * MAX_TILT * 2));
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    hostEl.addEventListener('mouseleave', function() {
+      isHovering = false; trx = 0; try_ = 0;
+      hostEl.style.transition =
+        'transform 0.50s ' + EASE_OUT + ' 0s,' +
+        'box-shadow 0.45s ' + EASE_OUT + ' 0s';
+      hostEl.style.transform = '';
+      hostEl.style.boxShadow = '';
+      hostEl.style.zIndex    = '';
+      setTimeout(function() { hostEl.style.transition = ''; }, 540);
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    hostEl.style.cursor = 'pointer';
+  }
+
+  var mainImg   = document.querySelector('#s9 .aw-main-img');
+  var mainInner = document.querySelector('#s9 .aw-main-float-inner');
+  var secImg    = document.querySelector('#s9 .aw-sec-img');
+  var secInner  = document.querySelector('#s9 .aw-sec-float-inner');
+
+  if (mainImg && mainInner) attach(mainImg, mainInner, {
+    maxTilt: 5, liftPx: 12, scale: 1.018,
+    shadowHover:
+      '0 32px 84px rgba(25,22,89,.22),' +
+      '0 0 0 1.5px rgba(50,210,180,.34),' +
+      '0 0 60px rgba(50,210,180,.17)'
+  });
+
+  if (secImg && secInner) attach(secImg, secInner, {
+    maxTilt: 3, liftPx: 7, scale: 1.012,
+    shadowHover:
+      '0 16px 44px rgba(25,22,89,.18),' +
+      '0 0 0 1px rgba(50,210,180,.22),' +
+      '0 0 30px rgba(50,210,180,.10)'
+  });
+})();
+
+/* ================================================
+   SLIDE 10 — Poster card hover
+   Lift + glow + 3D tilt + radial spotlight overlay
+   ================================================ */
+(function initS10Hover() {
+  var isExport     = document.body.classList.contains('export-mode');
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (isExport || reducedMotion) return;
+
+  var EASE_IN  = 'cubic-bezier(0.34,1.56,0.64,1)';
+  var EASE_OUT = 'cubic-bezier(0.16,1,0.3,1)';
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  document.querySelectorAll('#s10 .fb-card').forEach(function(card, idx) {
+    var inner   = card.querySelector('.fb-float-inner');
+    var overlay = card.querySelector('.fb-highlight-overlay');
+    if (!inner) return;
+
+    var isCenter = idx === 1;
+    var MAX_TILT = isCenter ? 6 : 5;
+    var LIFT_PX  = isCenter ? 14 : 10;
+    var SCALE    = isCenter ? 1.03 : 1.02;
+    var SHADOW   =
+      '0 ' + (isCenter ? 36 : 28) + 'px ' + (isCenter ? 88 : 68) + 'px rgba(25,22,89,.22),' +
+      '0 0 0 1.5px rgba(50,210,180,' + (isCenter ? '.38' : '.28') + '),' +
+      '0 0 ' + (isCenter ? 64 : 48) + 'px rgba(50,210,180,' + (isCenter ? '.18' : '.13') + ')';
+
+    var isHovering = false;
+    var rx = 0, ry = 0, trx = 0, try_ = 0;
+    var rafId = null;
+
+    function tick() {
+      rx = lerp(rx, trx, 0.12);
+      ry = lerp(ry, try_, 0.12);
+      inner.style.transform =
+        'perspective(700px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg)';
+      var settled = !isHovering && Math.abs(rx) < 0.04 && Math.abs(ry) < 0.04;
+      if (settled) {
+        inner.style.transform = '';
+        inner.style.animationPlayState = '';
+        if (overlay) { overlay.style.opacity = '0'; overlay.style.background = ''; }
+        rafId = null;
+      } else {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    card.addEventListener('mouseenter', function() {
+      isHovering = true;
+      inner.style.animationPlayState = 'paused';
+      card.style.transition =
+        'transform 0.38s ' + EASE_IN + ' 0s,' +
+        'box-shadow 0.30s ' + EASE_OUT + ' 0s';
+      card.style.transform = 'translateY(' + (-LIFT_PX) + 'px) scale(' + SCALE + ')';
+      card.style.boxShadow = SHADOW;
+      card.style.zIndex    = '10';
+      if (overlay) overlay.style.opacity = '1';
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      var x    = (e.clientX - rect.left) / rect.width;
+      var y    = (e.clientY - rect.top)  / rect.height;
+      trx  = Math.max(-MAX_TILT, Math.min(MAX_TILT, -(y - 0.5) * MAX_TILT * 2));
+      try_ = Math.max(-MAX_TILT, Math.min(MAX_TILT,  (x - 0.5) * MAX_TILT * 2));
+      if (overlay) {
+        overlay.style.background =
+          'radial-gradient(circle at ' + (x * 100).toFixed(1) + '% ' + (y * 100).toFixed(1) + '%,' +
+          'rgba(255,255,255,.22) 0%,rgba(255,255,255,0) 54%)';
+      }
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    card.addEventListener('mouseleave', function() {
+      isHovering = false; trx = 0; try_ = 0;
+      card.style.transition =
+        'transform 0.50s ' + EASE_OUT + ' 0s,' +
+        'box-shadow 0.45s ' + EASE_OUT + ' 0s';
+      card.style.transform = '';
+      card.style.boxShadow = '';
+      card.style.zIndex    = '';
+      setTimeout(function() { card.style.transition = ''; }, 540);
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    card.style.cursor = 'pointer';
   });
 })();
 </script>
