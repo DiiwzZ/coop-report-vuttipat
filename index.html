@@ -1143,7 +1143,27 @@
     }
     @media (prefers-reduced-motion:reduce) {
       .vd-card, .vd-phone { opacity:1 !important; transform:none !important; transition:none !important; }
+      .vd-bar-fill { transition:none !important; }
     }
+
+    /* ── Slide 11: comparison bars + phone height overrides ── */
+    #s11 .vd-card { grid-template-rows:auto 1fr auto auto; }
+    #s11 .vd-phone-pair { height:385px; }
+    #s11 .vd-phone { height:380px; }
+    .vd-bars { padding-top:7px; display:flex; flex-direction:column; gap:4px; }
+    .vd-bar-row { display:flex; align-items:center; gap:7px; }
+    .vd-bar-lbl {
+      font-size:9px; font-weight:600; letter-spacing:.07em; text-transform:uppercase;
+      color:var(--navy-30); width:32px; flex-shrink:0;
+    }
+    .vd-bar-track { flex:1; height:6px; background:rgba(25,22,89,.05); border-radius:999px; overflow:hidden; }
+    .vd-bar-fill {
+      height:100%; border-radius:999px; width:0;
+      transition:width .9s cubic-bezier(0.16,1,0.3,1);
+    }
+    .vd-bar-fill.vd-bar-mint { background:linear-gradient(to right, var(--mint-dk), var(--mint)); }
+    .vd-bar-fill.vd-bar-navy { background:linear-gradient(to right, rgba(25,22,89,.40), rgba(25,22,89,.55)); }
+    body.export-mode .vd-bar-fill { transition:none !important; }
 
     /* ==========================================
        SLIDE 12 — GRAPHIC / VISUAL DIRECTION
@@ -1964,6 +1984,7 @@
       .prs-word { opacity:1 !important; transform:none !important; transition:none !important; }
       body:not(.export-mode) .vd-phone.is-reel,
       body:not(.export-mode) .vd-phone.is-tiktok { transition:none !important; }
+      .vd-bar-fill { transition:none !important; }
     }
   </style>
 </head>
@@ -2512,8 +2533,8 @@
           <div class="vd-ttl reveal" style="transition-delay:.15s">Total Video Views</div>
         </div>
         <div class="vd-tags reveal" style="transition-delay:.2s">
-          <div class="vd-tag t-fb">FB Reels 343,000+</div>
-          <div class="vd-tag t-tt">TikTok 361,992+</div>
+          <div class="vd-tag t-fb">FB Reels <span class="s11-count" data-target="343000" data-dur="1100" data-suffix="">343,000</span>+</div>
+          <div class="vd-tag t-tt">TikTok <span class="s11-count" data-target="361992" data-dur="1100" data-suffix="">361,992</span>+</div>
           <div class="vd-tag" style="background:var(--white);color:var(--navy);border-color:var(--navy-06)">11 Videos Published</div>
         </div>
       </div>
@@ -2546,7 +2567,17 @@
           <div class="vd-views">
             <div class="vd-view"><b>180,000+</b><span>Reel</span></div>
             <div class="vd-view"><b>114,500+</b><span>TikTok</span></div>
-            <div class="vd-view total"><b>294,500+</b><span>Total</span></div>
+            <div class="vd-view total"><b class="s11-count" data-target="294500" data-dur="1000" data-suffix="+">294,500+</b><span>Total</span></div>
+          </div>
+          <div class="vd-bars">
+            <div class="vd-bar-row">
+              <span class="vd-bar-lbl">Reel</span>
+              <div class="vd-bar-track"><div class="vd-bar-fill vd-bar-mint" data-bar-w="100" style="width:100%"></div></div>
+            </div>
+            <div class="vd-bar-row">
+              <span class="vd-bar-lbl">TikTok</span>
+              <div class="vd-bar-track"><div class="vd-bar-fill vd-bar-navy" data-bar-w="63.6" style="width:63.6%"></div></div>
+            </div>
           </div>
         </div>
         <div class="vd-card reveal-scale" style="transition-delay:.1s">
@@ -2577,7 +2608,17 @@
           <div class="vd-views">
             <div class="vd-view"><b>24,000+</b><span>Reel</span></div>
             <div class="vd-view"><b>167,900+</b><span>TikTok</span></div>
-            <div class="vd-view total"><b>191,900+</b><span>Total</span></div>
+            <div class="vd-view total"><b class="s11-count" data-target="191900" data-dur="1000" data-suffix="+">191,900+</b><span>Total</span></div>
+          </div>
+          <div class="vd-bars">
+            <div class="vd-bar-row">
+              <span class="vd-bar-lbl">Reel</span>
+              <div class="vd-bar-track"><div class="vd-bar-fill vd-bar-mint" data-bar-w="14.3" style="width:14.3%"></div></div>
+            </div>
+            <div class="vd-bar-row">
+              <span class="vd-bar-lbl">TikTok</span>
+              <div class="vd-bar-track"><div class="vd-bar-fill vd-bar-navy" data-bar-w="100" style="width:100%"></div></div>
+            </div>
           </div>
         </div>
         <div class="vd-card reveal-scale" style="transition-delay:.2s">
@@ -2608,7 +2649,17 @@
           <div class="vd-views">
             <div class="vd-view"><b>49,000+</b><span>Reel</span></div>
             <div class="vd-view"><b>53,900+</b><span>TikTok</span></div>
-            <div class="vd-view total"><b>102,900+</b><span>Total</span></div>
+            <div class="vd-view total"><b class="s11-count" data-target="102900" data-dur="1000" data-suffix="+">102,900+</b><span>Total</span></div>
+          </div>
+          <div class="vd-bars">
+            <div class="vd-bar-row">
+              <span class="vd-bar-lbl">Reel</span>
+              <div class="vd-bar-track"><div class="vd-bar-fill vd-bar-mint" data-bar-w="90.9" style="width:90.9%"></div></div>
+            </div>
+            <div class="vd-bar-row">
+              <span class="vd-bar-lbl">TikTok</span>
+              <div class="vd-bar-track"><div class="vd-bar-fill vd-bar-navy" data-bar-w="100" style="width:100%"></div></div>
+            </div>
           </div>
         </div>
       </div>
@@ -3692,6 +3743,173 @@ const deck = new Deck();
 
     card.style.cursor = 'pointer';
   });
+})();
+
+/* ================================================
+   SLIDE 11 — Comparison bars + extended count-up + hover parallax
+   ================================================ */
+(function initS11Effects() {
+  var isExport      = document.body.classList.contains('export-mode');
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* Reset bar fills to 0 so they can animate in on first visit.
+     Bars carry inline style="width:X%" for export/print default;
+     we clear that here so the CSS transition fires from 0. */
+  if (!isExport && !reducedMotion) {
+    document.querySelectorAll('#s11 .vd-bar-fill').forEach(function(bar) {
+      bar.style.transition = 'none';
+      bar.style.width      = '0';
+      bar.getBoundingClientRect(); // flush layout
+      bar.style.transition = '';   // restore CSS transition
+    });
+  }
+
+  if (isExport || reducedMotion) return;
+
+  /* ── Helpers ────────────────────────────────── */
+  function easeOutExpo(t) { return t >= 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+  function countUp(el, target, duration, formatter) {
+    var start = performance.now();
+    (function step(now) {
+      var t   = Math.min(1, (now - start) / duration);
+      var val = Math.round(easeOutExpo(t) * target);
+      el.textContent = formatter(val);
+      if (t < 1) requestAnimationFrame(step);
+    })(start);
+  }
+
+  /* ── State ───────────────────────────────────── */
+  var s11CountedUp   = false;
+  var s11BarsAnimated = false;
+
+  /* ── Count-up trigger ────────────────────────── */
+  function triggerS11CountUp() {
+    if (s11CountedUp) return;
+    s11CountedUp = true;
+    document.querySelectorAll('#s11 .s11-count').forEach(function(el, idx) {
+      var target = parseInt(el.getAttribute('data-target') || '0', 10);
+      var dur    = parseInt(el.getAttribute('data-dur')    || '1000', 10);
+      var suffix = el.getAttribute('data-suffix') || '';
+      setTimeout(function() {
+        el.textContent = '0' + suffix;
+        countUp(el, target, dur, function(n) {
+          return n.toLocaleString('en-US') + suffix;
+        });
+      }, 280 + idx * 60);
+    });
+  }
+
+  /* ── Bar animation trigger ───────────────────── */
+  function triggerS11Bars() {
+    if (s11BarsAnimated) return;
+    s11BarsAnimated = true;
+    setTimeout(function() {
+      document.querySelectorAll('#s11 .vd-bar-fill').forEach(function(bar) {
+        var w = parseFloat(bar.getAttribute('data-bar-w') || '0');
+        bar.style.width = w + '%';
+      });
+    }, 350);
+  }
+
+  /* ── Hover parallax ─────────────────────────── */
+  var EASE_OUT     = 'cubic-bezier(0.16,1,0.3,1)';
+  var MAX_TILT     = 4;
+  var LIFT_TARGET  = -10;
+  var SCALE_TARGET = 1.012;
+  var HOVER_SHADOW =
+    '0 32px 80px rgba(25,22,89,.18),' +
+    '0 4px 16px rgba(25,22,89,.09),' +
+    '0 0 0 1px rgba(50,210,180,.12)';
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  document.querySelectorAll('#s11 .vd-card').forEach(function(card) {
+    var phonePair  = card.querySelector('.vd-phone-pair');
+    var isHovering = false;
+    var rx = 0, ry = 0, trx = 0, try_ = 0;
+    var currentLift = 0, currentScale = 1;
+    var rafId = null;
+
+    function tick() {
+      var f    = isHovering ? 0.15 : 0.09;
+      rx           = lerp(rx,           trx,          f);
+      ry           = lerp(ry,           try_,         f);
+      currentLift  = lerp(currentLift,  isHovering ? LIFT_TARGET : 0, f);
+      currentScale = lerp(currentScale, isHovering ? SCALE_TARGET : 1, f);
+
+      card.style.transform =
+        'perspective(600px)' +
+        ' rotateX(' + rx.toFixed(2)            + 'deg)' +
+        ' rotateY(' + ry.toFixed(2)            + 'deg)' +
+        ' translateY(' + currentLift.toFixed(1) + 'px)' +
+        ' scale('      + currentScale.toFixed(4) + ')';
+
+      if (phonePair)
+        phonePair.style.transform =
+          'translate(' + (-ry * 2).toFixed(1) + 'px,' + (-rx * 2).toFixed(1) + 'px)';
+
+      var settled =
+        !isHovering &&
+        Math.abs(rx)           < 0.04  &&
+        Math.abs(ry)           < 0.04  &&
+        Math.abs(currentLift)  < 0.15  &&
+        Math.abs(currentScale - 1) < 0.0008;
+
+      if (settled) {
+        card.style.transform      = '';
+        card.style.boxShadow      = '';
+        card.style.zIndex         = '';
+        card.style.transition     = '';
+        if (phonePair) phonePair.style.transform = '';
+        rafId = null;
+      } else {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    card.addEventListener('mouseenter', function() {
+      isHovering = true;
+      card.style.transition = 'box-shadow 0.3s ' + EASE_OUT;
+      card.style.boxShadow  = HOVER_SHADOW;
+      card.style.zIndex     = '5';
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      trx  = Math.max(-MAX_TILT, Math.min(MAX_TILT, -((e.clientY - rect.top)  / rect.height - 0.5) * MAX_TILT * 2));
+      try_ = Math.max(-MAX_TILT, Math.min(MAX_TILT,  ((e.clientX - rect.left) / rect.width  - 0.5) * MAX_TILT * 2));
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    card.addEventListener('mouseleave', function() {
+      isHovering = false;
+      trx = 0; try_ = 0;
+      card.style.transition = 'box-shadow 0.45s ' + EASE_OUT;
+      card.style.boxShadow  = '';
+      card.style.zIndex     = '';
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    card.style.cursor = 'pointer';
+  });
+
+  /* ── Patch deck.go to trigger on s11 navigation ── */
+  var _prevGo = deck.go.bind(deck);
+  deck.go = function(i) {
+    _prevGo(i);
+    if (deck.slides[deck.idx] && deck.slides[deck.idx].id === 's11') {
+      triggerS11CountUp();
+      triggerS11Bars();
+    }
+  };
+
+  /* Trigger immediately if already on s11 at page load */
+  if (deck.slides[deck.idx] && deck.slides[deck.idx].id === 's11') {
+    triggerS11CountUp();
+    triggerS11Bars();
+  }
 })();
 </script>
 </body>
