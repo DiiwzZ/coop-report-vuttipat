@@ -1210,6 +1210,55 @@
       .gr-ph { box-shadow:none; border:1px solid var(--navy-06); }
     }
 
+    /* ── Slide 12: inner float canvas + spotlight overlay ── */
+    /* Float canvas — oversized 10px each side so animation never clips */
+    #s12 .gr-inner {
+      position:absolute; inset:-10px;
+      will-change:transform; transform:translateZ(0);
+    }
+    /* Restore exact fit in export/print (no float room needed) */
+    body.export-mode #s12 .gr-inner { inset:0 !important; }
+    @media print { #s12 .gr-inner { inset:0 !important; } }
+    /* Spotlight highlight overlay (JS-driven radial-gradient) */
+    .gr-overlay {
+      position:absolute; inset:0; z-index:3; border-radius:inherit;
+      pointer-events:none; opacity:0; transition:opacity .28s ease;
+    }
+    body.export-mode .gr-overlay { display:none !important; }
+    /* Float keyframes — gentle, offset phases */
+    @keyframes gr-bob-a {
+      0%,100% { transform:translateY(0) translateX(0); }
+      30%     { transform:translateY(-7px) translateX(3px); }
+      65%     { transform:translateY(4px) translateX(-2px); }
+    }
+    @keyframes gr-bob-b {
+      0%,100% { transform:translateY(0) translateX(0); }
+      38%     { transform:translateY(-5px) translateX(2px); }
+      72%     { transform:translateY(3px) translateX(-3px); }
+    }
+    /* Float — presentation mode only, activates when slide is visible */
+    body:not(.export-mode) #s12.visible .gr-main .gr-inner {
+      animation:gr-bob-a 9s ease-in-out infinite;
+    }
+    body:not(.export-mode) #s12.visible .gr-showcase > .gr-ph:nth-child(2) .gr-inner {
+      animation:gr-bob-b 7.5s ease-in-out infinite;
+    }
+    body:not(.export-mode) #s12.visible .gr-showcase > .gr-ph:nth-child(3) .gr-inner {
+      animation:gr-bob-b 8.5s ease-in-out infinite -2.8s;
+    }
+    body:not(.export-mode) #s12.visible .gr-showcase > .gr-ph:nth-child(4) .gr-inner {
+      animation:gr-bob-b 7s ease-in-out infinite -5.5s;
+    }
+    /* Enhanced stagger entry (overrides global reveal-scale for S12 cards) */
+    body:not(.export-mode) #s12 .gr-ph {
+      opacity:0; transform:translateY(28px) scale(0.94);
+      transition:opacity .60s var(--ease), transform .60s var(--ease), box-shadow .3s ease;
+      cursor:pointer;
+    }
+    body:not(.export-mode) #s12.visible .gr-ph {
+      opacity:1; transform:translateY(0) scale(1);
+    }
+
     /* ==========================================
        SLIDES 13–14 — ARTICLE VISUAL OVERVIEW
        ========================================== */
@@ -1985,6 +2034,9 @@
       body:not(.export-mode) .vd-phone.is-reel,
       body:not(.export-mode) .vd-phone.is-tiktok { transition:none !important; }
       .vd-bar-fill { transition:none !important; }
+      body:not(.export-mode) #s12 .gr-inner { animation:none !important; }
+      body:not(.export-mode) #s12 .gr-ph { cursor:default !important; }
+      .gr-overlay { opacity:0 !important; transition:none !important; }
     }
   </style>
 </head>
@@ -2683,27 +2735,39 @@
           <div class="gr-showcase">
             <!-- Hero — main large image, spans all 3 rows -->
             <div class="gr-ph gr-main reveal-scale">
-              <img src="assets/graphics/graphic-01.jpg" alt="Graphic 1" class="ph-asset"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="gr-inner">
+                <img src="assets/graphics/graphic-01.jpg" alt="Graphic 1" class="ph-asset"
+                     onerror="this.style.display='none';this.closest('.gr-ph').querySelector('.ph-lbl').style.display='block'">
+              </div>
               <div class="ph-lbl" style="display:none">[ใส่กราฟิกหลัก]</div>
+              <div class="gr-overlay"></div>
             </div>
             <!-- Side card 1 -->
             <div class="gr-ph reveal-scale" style="transition-delay:.12s">
-              <img src="assets/graphics/graphic-02.jpg" alt="Graphic 2" class="ph-asset"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="gr-inner">
+                <img src="assets/graphics/graphic-02.jpg" alt="Graphic 2" class="ph-asset"
+                     onerror="this.style.display='none';this.closest('.gr-ph').querySelector('.ph-lbl').style.display='block'">
+              </div>
               <div class="ph-lbl" style="display:none">[กราฟิก 2]</div>
+              <div class="gr-overlay"></div>
             </div>
             <!-- Side card 2 -->
             <div class="gr-ph reveal-scale" style="transition-delay:.22s">
-              <img src="assets/graphics/graphic-03.jpg" alt="Graphic 3" class="ph-asset"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="gr-inner">
+                <img src="assets/graphics/graphic-03.jpg" alt="Graphic 3" class="ph-asset"
+                     onerror="this.style.display='none';this.closest('.gr-ph').querySelector('.ph-lbl').style.display='block'">
+              </div>
               <div class="ph-lbl" style="display:none">[กราฟิก 3]</div>
+              <div class="gr-overlay"></div>
             </div>
             <!-- Side card 3 -->
             <div class="gr-ph reveal-scale" style="transition-delay:.32s">
-              <img src="assets/graphics/graphic-04.png" alt="Graphic 4" class="ph-asset"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="gr-inner">
+                <img src="assets/graphics/graphic-04.png" alt="Graphic 4" class="ph-asset"
+                     onerror="this.style.display='none';this.closest('.gr-ph').querySelector('.ph-lbl').style.display='block'">
+              </div>
               <div class="ph-lbl" style="display:none">[กราฟิก 4]</div>
+              <div class="gr-overlay"></div>
             </div>
           </div>
         </div>
@@ -3910,6 +3974,98 @@ const deck = new Deck();
     triggerS11CountUp();
     triggerS11Bars();
   }
+})();
+
+/* ================================================
+   SLIDE 12 — Graphic showcase: float + spotlight + 3D hover
+   .gr-inner  = float canvas (inset:-10px, isolates tilt from card transform)
+   .gr-overlay = mouse-tracked spotlight radial-gradient
+   ================================================ */
+(function initS12Effects() {
+  var isExport      = document.body.classList.contains('export-mode');
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (isExport || reducedMotion) return;
+
+  var EASE_IN  = 'cubic-bezier(0.34,1.56,0.64,1)';
+  var EASE_OUT = 'cubic-bezier(0.16,1,0.3,1)';
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  document.querySelectorAll('#s12 .gr-ph').forEach(function(card) {
+    var inner   = card.querySelector('.gr-inner');
+    var overlay = card.querySelector('.gr-overlay');
+    if (!inner) return;
+
+    var isMain    = card.classList.contains('gr-main');
+    var MAX_TILT  = isMain ? 4 : 5;
+    var LIFT_PX   = isMain ? 10 : 8;
+    var SCALE_VAL = isMain ? 1.012 : 1.018;
+    var SHADOW    = isMain
+      ? '0 28px 72px rgba(25,22,89,.20),' +
+        '0 0 0 1.5px rgba(50,210,180,.28),' +
+        '0 0 48px rgba(50,210,180,.12)'
+      : '0 18px 52px rgba(25,22,89,.18),' +
+        '0 0 0 1.5px rgba(50,210,180,.24),' +
+        '0 0 36px rgba(50,210,180,.10)';
+
+    var isHovering = false;
+    var rx = 0, ry = 0, trx = 0, try_ = 0;
+    var rafId = null;
+
+    function tick() {
+      rx = lerp(rx, trx, 0.12);
+      ry = lerp(ry, try_, 0.12);
+      inner.style.transform =
+        'perspective(800px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg)';
+      var settled = !isHovering && Math.abs(rx) < 0.04 && Math.abs(ry) < 0.04;
+      if (settled) {
+        inner.style.transform          = '';
+        inner.style.animationPlayState = ''; // resume idle float
+        if (overlay) { overlay.style.opacity = '0'; overlay.style.background = ''; }
+        rafId = null;
+      } else {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    card.addEventListener('mouseenter', function() {
+      isHovering = true;
+      inner.style.animationPlayState = 'paused';
+      card.style.transition =
+        'transform 0.38s ' + EASE_IN + ' 0s,' +
+        'box-shadow 0.30s ' + EASE_OUT + ' 0s';
+      card.style.transform = 'translateY(' + (-LIFT_PX) + 'px) scale(' + SCALE_VAL + ')';
+      card.style.boxShadow = SHADOW;
+      card.style.zIndex    = '10';
+      if (overlay) overlay.style.opacity = '1';
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      var x    = (e.clientX - rect.left) / rect.width;
+      var y    = (e.clientY - rect.top)  / rect.height;
+      trx  = Math.max(-MAX_TILT, Math.min(MAX_TILT, -(y - 0.5) * MAX_TILT * 2));
+      try_ = Math.max(-MAX_TILT, Math.min(MAX_TILT,  (x - 0.5) * MAX_TILT * 2));
+      if (overlay) {
+        overlay.style.background =
+          'radial-gradient(circle at ' + (x * 100).toFixed(1) + '% ' + (y * 100).toFixed(1) + '%,' +
+          'rgba(255,255,255,.18) 0%,rgba(255,255,255,0) 55%)';
+      }
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    card.addEventListener('mouseleave', function() {
+      isHovering = false; trx = 0; try_ = 0;
+      card.style.transition =
+        'transform 0.50s ' + EASE_OUT + ' 0s,' +
+        'box-shadow 0.45s ' + EASE_OUT + ' 0s';
+      card.style.transform = '';
+      card.style.boxShadow = '';
+      card.style.zIndex    = '';
+      setTimeout(function() { card.style.transition = ''; }, 540);
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+  });
 })();
 </script>
 </body>
