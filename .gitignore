@@ -1,0 +1,11 @@
+# Local dev workspace (deployment copy lives at root index.html + assets/)
+slides/
+
+# Claude Code local config
+.claude/
+
+# Generated PDF (run: bash scripts/export-pdf.sh ./index.html ./output.pdf)
+*.pdf
+
+# Node / Playwright temp
+node_modules/

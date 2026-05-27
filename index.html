@@ -1,0 +1,2968 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>รายงานผลการปฏิบัติงานสหกิจศึกษา — วุฒิภัทร ประไพ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Prompt: modern geometric Thai+Latin — clean Apple-like feel -->
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================
+       THEME TOKENS
+       ========================================== */
+    :root {
+      --bg:        #FAFAF9;
+      --white:     #FFFFFF;
+      --navy:      #191659;
+      --navy-80:   rgba(25,22,89,0.80);
+      --navy-50:   rgba(25,22,89,0.50);
+      --navy-30:   rgba(25,22,89,0.30);
+      --navy-10:   rgba(25,22,89,0.10);
+      --navy-06:   rgba(25,22,89,0.06);
+      --mint:      #32D2B4;
+      --mint-dk:   #22B49A;
+      --mint-lt:   #E6F9F5;
+      --mint-20:   rgba(50,210,180,0.20);
+      --mint-12:   rgba(50,210,180,0.12);
+      --mint-08:   rgba(50,210,180,0.08);
+      --f:         'Prompt', sans-serif;
+      --ease:      cubic-bezier(0.16,1,0.3,1);
+      --stage-bg:  #F4F4F2;
+      --slide-bg:  #FAFAF9;
+    }
+
+    /* ==========================================
+       RESET
+       ========================================== */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    /* ==========================================
+       VIEWPORT-BASE.CSS — FULL CONTENTS (mandatory)
+       ========================================== */
+    html, body {
+      width:100%; height:100%;
+      margin:0; overflow:hidden;
+      background: var(--stage-bg,#000);
+    }
+    .deck-viewport {
+      position:fixed; inset:0; overflow:hidden;
+      background: var(--stage-bg,#000);
+    }
+    .deck-stage {
+      position:absolute; left:0; top:0;
+      width:1920px; height:1080px;
+      overflow:hidden; transform-origin:0 0;
+      background: var(--slide-bg,#fff);
+    }
+    .slide {
+      position:absolute; inset:0;
+      width:1920px; height:1080px;
+      overflow:hidden; display:block;
+      visibility:hidden; opacity:0; pointer-events:none;
+      background: var(--slide-bg,#fff);
+    }
+    .slide.active, .slide.visible {
+      visibility:visible; opacity:1;
+      pointer-events:auto; z-index:1;
+    }
+    img,video,canvas,svg { max-width:100%; max-height:100%; }
+    .deck-controls {
+      position:fixed; left:50%; bottom:22px;
+      transform:translateX(-50%); z-index:1000;
+    }
+    @media print {
+      html,body { width:1920px; height:auto; overflow:visible; background:#fff; }
+      .deck-viewport { position:static; overflow:visible; background:#fff; }
+      .deck-stage { position:static; width:auto; height:auto; transform:none !important; background:none; }
+      .slide {
+        position:relative; display:block !important;
+        visibility:visible !important; opacity:1 !important;
+        pointer-events:auto !important;
+        width:1920px; height:1080px;
+        break-after:page; page-break-after:always;
+      }
+      .slide:last-child { break-after:auto; page-break-after:auto; }
+      .deck-controls { display:none !important; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      *,*::before,*::after {
+        animation-duration:0.01ms !important;
+        transition-duration:0.2s !important;
+      }
+    }
+
+    /* ==========================================
+       TYPOGRAPHY BASE
+       ========================================== */
+    body { font-family: var(--f); }
+
+    /* ==========================================
+       REVEAL ANIMATIONS
+       .reveal — fade + slide up (default)
+       .reveal-scale — fade + scale in
+       ========================================== */
+    .reveal {
+      opacity:0; transform:translateY(22px);
+      transition:opacity .6s var(--ease), transform .6s var(--ease);
+    }
+    .slide.visible .reveal { opacity:1; transform:translateY(0); }
+
+    .reveal-scale {
+      opacity:0; transform:scale(0.93);
+      transition:opacity .55s var(--ease), transform .55s var(--ease);
+    }
+    .slide.visible .reveal-scale { opacity:1; transform:scale(1); }
+
+    /* Stagger via nth-child (applies to .reveal siblings) */
+    .stagger > *:nth-child(1) { transition-delay:.04s; }
+    .stagger > *:nth-child(2) { transition-delay:.13s; }
+    .stagger > *:nth-child(3) { transition-delay:.22s; }
+    .stagger > *:nth-child(4) { transition-delay:.31s; }
+    .stagger > *:nth-child(5) { transition-delay:.40s; }
+    .stagger > *:nth-child(6) { transition-delay:.49s; }
+
+    /* ==========================================
+       SHARED ELEMENTS
+       ========================================== */
+    .s-label {
+      font-size:17px; font-weight:500; letter-spacing:.13em;
+      text-transform:uppercase; color:var(--mint-dk);
+      margin-bottom:20px;
+    }
+    .s-title {
+      font-size:72px; font-weight:800; line-height:1.05;
+      color:var(--navy); margin-bottom:44px;
+    }
+    /* ==========================================
+       SLIDE 1 — SHAPE LANDING HERO
+       Ref: 21st.dev shape-landing-hero
+       ========================================== */
+    #s1 {
+      background: var(--bg);
+      /* Local palette additions scoped to this slide */
+      --blue-mid: #759CBF;
+      --warm-1:   #F2BC79;
+      --warm-2:   #D9936A;
+    }
+
+    /* ── Floating gradient blobs ── */
+
+    /* Warm amber blob — bleeds off bottom-right */
+    .s1-warm {
+      position:absolute; bottom:-300px; right:-260px;
+      width:900px; height:900px; border-radius:50%;
+      background:radial-gradient(circle at 38% 38%,
+        rgba(242,188,121,.22) 0%,
+        rgba(217,147,106,.09) 42%,
+        transparent 68%);
+      pointer-events:none;
+    }
+
+    /* Mint bloom — bleeds off top-left */
+    .s1-mint {
+      position:absolute; top:-220px; left:-220px;
+      width:800px; height:800px; border-radius:50%;
+      background:radial-gradient(circle at 58% 58%,
+        rgba(50,210,180,.17) 0%,
+        rgba(50,210,180,.05) 50%,
+        transparent 68%);
+      pointer-events:none;
+    }
+
+    /* Blue-grey haze — top-right, soft depth layer */
+    .s1-blue {
+      position:absolute; top:-200px; right:-130px;
+      width:680px; height:680px; border-radius:50%;
+      background:radial-gradient(circle at 46% 46%,
+        rgba(117,156,191,.15) 0%,
+        transparent 60%);
+      pointer-events:none;
+    }
+
+    /* ── Outline rings (structural depth) ── */
+
+    /* Mid-right floating ring */
+    .s1-ring {
+      position:absolute; top:80px; right:160px;
+      width:480px; height:480px; border-radius:50%;
+      border:1.5px solid rgba(50,210,180,.13);
+      pointer-events:none;
+    }
+
+    /* Large ghost ring — bottom-left */
+    .s1-ring2 {
+      position:absolute; bottom:-340px; left:-180px;
+      width:780px; height:780px; border-radius:50%;
+      border:1px solid rgba(117,156,191,.09);
+      pointer-events:none;
+    }
+
+    /* Inner concentric ring inside mid-right ring */
+    .s1-ring3 {
+      position:absolute; top:178px; right:258px;
+      width:284px; height:284px; border-radius:50%;
+      border:1px solid rgba(50,210,180,.08);
+      pointer-events:none;
+    }
+
+    /* ── Micro-accent geometry ── */
+
+    /* Dot matrix — right-center, away from text */
+    .s1-dots {
+      position:absolute; top:310px; right:200px;
+      width:144px; height:200px;
+      background-image:radial-gradient(circle, rgba(25,22,89,.16) 1.5px, transparent 1.5px);
+      background-size:20px 20px;
+      pointer-events:none;
+    }
+
+    /* Warm accent dot pair — near top of ring */
+    .s1-dot1 {
+      position:absolute; top:248px; right:510px;
+      width:16px; height:16px; border-radius:50%;
+      background:rgba(242,188,121,.65);
+      pointer-events:none;
+    }
+    .s1-dot2 {
+      position:absolute; top:296px; right:474px;
+      width:9px; height:9px; border-radius:50%;
+      background:rgba(217,147,106,.45);
+      pointer-events:none;
+    }
+
+    /* Rotated mint square — lower-left */
+    .s1-sq {
+      position:absolute; bottom:370px; left:240px;
+      width:11px; height:11px;
+      border:2px solid rgba(50,210,180,.36);
+      transform:rotate(45deg);
+      pointer-events:none;
+    }
+
+    /* Short horizontal accent line — bottom-left */
+    .s1-hline {
+      position:absolute; bottom:328px; left:80px;
+      width:48px; height:1.5px;
+      background:rgba(50,210,180,.42);
+      pointer-events:none;
+    }
+
+    /* ── Logo placements ── */
+    .cv-logo-l {
+      position:absolute; top:52px; left:80px; z-index:5;
+    }
+    .cv-logo-r {
+      position:absolute; bottom:56px; right:80px; z-index:5;
+    }
+
+    /* ── Center hero block ── */
+    .cv-center {
+      position:absolute; top:50%; left:50%;
+      transform:translate(-50%, -52%);
+      text-align:center; width:1360px; z-index:2;
+    }
+
+    /* Badge pill — program type label */
+    .cv-badge {
+      display:inline-flex; align-items:center; gap:9px;
+      padding:9px 22px;
+      border:1px solid rgba(50,210,180,.28);
+      border-radius:40px;
+      background:rgba(50,210,180,.05);
+      font-size:16px; font-weight:400; letter-spacing:.09em;
+      color:var(--mint-dk);
+      margin-bottom:36px;
+    }
+    .cv-badge-dot {
+      width:5px; height:5px; border-radius:50%;
+      background:var(--mint); flex-shrink:0;
+    }
+
+    /* Headline line 1 — big navy */
+    .cv-h1 {
+      font-size:120px; font-weight:800; line-height:1.0;
+      color:var(--navy); letter-spacing:-.03em;
+      margin-bottom:4px;
+    }
+
+    /* Headline line 2 — mint accent (PDF-safe solid color) */
+    .cv-h1b {
+      font-size:120px; font-weight:800; line-height:1.0;
+      color:var(--mint); letter-spacing:-.03em;
+      margin-bottom:36px;
+    }
+
+    /* Subtitle */
+    .cv-sub {
+      font-size:24px; font-weight:400;
+      color:rgba(25,22,89,.50); letter-spacing:.02em;
+      margin-bottom:48px;
+    }
+    .cv-sep {
+      display:inline-block; margin:0 12px;
+      color:rgba(50,210,180,.55);
+    }
+
+    /* Glass info card — single row, 3 cells */
+    .cv-card {
+      display:inline-flex; align-items:stretch;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(25,22,89,.08);
+      border-radius:18px;
+      backdrop-filter:blur(16px) saturate(1.4);
+      -webkit-backdrop-filter:blur(16px) saturate(1.4);
+      overflow:hidden;
+    }
+    .cv-ci {
+      padding:20px 38px;
+      border-right:1px solid rgba(25,22,89,.07);
+    }
+    .cv-ci:last-child { border-right:none; }
+    .cv-ci-lbl {
+      font-size:12px; font-weight:500; letter-spacing:.11em;
+      text-transform:uppercase; color:var(--mint-dk);
+      margin-bottom:5px;
+    }
+    .cv-ci-val {
+      font-size:21px; font-weight:600; color:var(--navy);
+      white-space:nowrap;
+    }
+    /* Wrapper — stacks both cards, equalises width */
+    .cv-cards-wrap {
+      display:inline-flex; flex-direction:column;
+      align-items:stretch; gap:16px;
+    }
+    /* Secondary education-detail card — sits below main info card */
+    .cv-card2 {
+      background:rgba(255,255,255,.70);
+      border:1px solid rgba(25,22,89,.07);
+      border-radius:14px;
+      backdrop-filter:blur(14px) saturate(1.3);
+      -webkit-backdrop-filter:blur(14px) saturate(1.3);
+      padding:13px 38px 15px;
+      text-align:left;
+    }
+    .cv-card2-lbl {
+      font-size:11px; font-weight:600; letter-spacing:.11em;
+      text-transform:uppercase; color:var(--mint-dk);
+      margin-bottom:7px;
+    }
+    .cv-card2-line {
+      font-size:14px; font-weight:400; line-height:1.80;
+      color:rgba(25,22,89,.52);
+      white-space:nowrap;
+    }
+
+    /* ==========================================
+       SLIDE 2 — COMPANY OVERVIEW (Infinite Grid)
+       Ref: 21st.dev the-infinite-grid
+       ========================================== */
+    #s2 { background:var(--bg); }
+
+    /* Layer 1 — Infinite grid lines (mint, very subtle) */
+    @keyframes s2-grid-drift {
+      from { background-position: 0 0; }
+      to   { background-position: 64px 64px; }
+    }
+    #s2::before {
+      content:'';
+      position:absolute; inset:0;
+      background-image:
+        linear-gradient(rgba(50,210,180,.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(50,210,180,.07) 1px, transparent 1px);
+      background-size:64px 64px;
+      animation: s2-grid-drift 7s linear infinite;
+      pointer-events:none; z-index:0;
+    }
+
+    /* Layer 2 — Radial soft veil: cleans up reading area on left, lets grid breathe on right */
+    #s2::after {
+      content:'';
+      position:absolute; inset:0;
+      background:radial-gradient(ellipse 860px 760px at 34% 50%,
+        rgba(250,250,249,.94) 0%,
+        rgba(250,250,249,.55) 50%,
+        transparent 72%);
+      pointer-events:none; z-index:0;
+    }
+
+    .co-grid {
+      position:absolute; inset:0;
+      display:grid; grid-template-columns:1fr 1fr;
+      z-index:1;
+    }
+
+    .co-left {
+      padding:80px 72px 80px 100px; display:flex;
+      flex-direction:column; justify-content:center;
+    }
+    .co-right {
+      padding:80px 100px 80px 64px; display:flex;
+      flex-direction:column; justify-content:center; gap:26px;
+    }
+
+    /* Brand lockup: UpBean logo + divider + AP logo side-by-side */
+    .co-lockup {
+      display:flex; align-items:center; gap:22px;
+      margin-bottom:48px;
+    }
+    .co-lockup-div {
+      width:1px; height:38px;
+      background:rgba(25,22,89,.14); flex-shrink:0;
+    }
+
+    .co-name  {
+      font-size:52px; font-weight:700; color:var(--navy);
+      line-height:1.1; margin-bottom:10px;
+    }
+    .co-brand {
+      display:inline-flex; align-items:center; gap:10px;
+      font-size:19px; font-weight:500; letter-spacing:.06em;
+      color:var(--mint-dk); margin-bottom:32px;
+    }
+    .co-brand::before {
+      content:''; display:inline-block;
+      width:22px; height:2px; background:var(--mint); border-radius:1px; flex-shrink:0;
+    }
+    .co-desc  {
+      font-size:23px; font-weight:300; color:var(--navy-80); line-height:1.72;
+    }
+
+    /* Glass info cards floating over grid */
+    .co-card  {
+      background:rgba(255,255,255,.84);
+      border-radius:18px; padding:28px 36px;
+      border:1px solid rgba(25,22,89,.07);
+      backdrop-filter:blur(14px) saturate(1.3);
+      -webkit-backdrop-filter:blur(14px) saturate(1.3);
+      box-shadow:0 2px 28px rgba(25,22,89,.05), 0 1px 4px rgba(25,22,89,.04);
+      position:relative; overflow:hidden;
+    }
+    /* Mint gradient micro-rule at top of each card */
+    .co-card::before {
+      content:''; position:absolute;
+      top:0; left:28px; right:28px; height:1.5px;
+      background:linear-gradient(90deg, var(--mint) 0%, rgba(50,210,180,0) 100%);
+    }
+    .co-lbl  {
+      font-size:12px; font-weight:500; letter-spacing:.12em;
+      text-transform:uppercase; color:var(--mint-dk); margin-bottom:8px;
+    }
+    .co-val  { font-size:24px; font-weight:600; color:var(--navy); line-height:1.2; }
+    .co-sub  { font-size:17px; font-weight:400; color:var(--navy-50); margin-top:4px; }
+
+    /* ==========================================
+       SLIDE 3 — BOUNCE CARD ROLE MAP
+       Ref: 21st.dev bounce-card-features (PDF-safe)
+       ========================================== */
+    #s3 { background:var(--bg); }
+
+    /* Dot grid — same language as Slide 1–2 */
+    #s3::before {
+      content:''; position:absolute; inset:0;
+      background-image:radial-gradient(circle, rgba(25,22,89,.09) 1.5px, transparent 1.5px);
+      background-size:40px 40px;
+      pointer-events:none; z-index:0;
+    }
+    /* Radial veil — brightens center reading area */
+    #s3::after {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse 78% 74% at 50% 48%,
+        rgba(250,250,249,.93) 0%,
+        rgba(250,250,249,.44) 64%,
+        transparent 100%);
+      pointer-events:none; z-index:0;
+    }
+
+    /* ── Header ── */
+    .rm-top {
+      position:absolute; top:80px; left:100px; right:100px; z-index:1;
+    }
+    .rm-title { font-size:72px; font-weight:800; color:var(--navy); line-height:1; }
+    .rm-sub   { font-size:24px; font-weight:400; color:var(--navy-50); margin-top:10px; }
+    .rm-badge {
+      display:inline-flex; align-items:center; gap:9px;
+      margin-top:14px; padding:9px 22px;
+      border:1px solid rgba(50,210,180,.28); border-radius:40px;
+      background:rgba(50,210,180,.05);
+      font-size:18px; font-weight:400; letter-spacing:.07em; color:var(--mint-dk);
+    }
+    .rm-badge-dot { width:5px; height:5px; border-radius:50%; background:var(--mint); flex-shrink:0; }
+
+    /* ── Bounce card row ── */
+    .bc-row {
+      position:absolute; top:318px; left:80px; right:80px; bottom:70px;
+      display:flex; align-items:center; gap:26px; z-index:1;
+    }
+
+    /* Each card carries its own tilt via CSS custom props */
+    .bc-card {
+      flex:1; height:580px; position:relative; overflow:hidden;
+      background:rgba(255,255,255,.88);
+      border:1px solid rgba(25,22,89,.08);
+      border-radius:24px; padding:48px 42px 44px;
+      box-shadow:0 8px 48px rgba(25,22,89,.09), 0 2px 8px rgba(25,22,89,.05);
+
+      /* per-card tilt defaults — overridden by nth-child below */
+      --tilt: 0deg;
+      --lift: 0px;
+
+      /* Custom reveal: combines tilt + lift + scale-in — no conflict with global reveal-scale */
+      opacity:0;
+      transform: rotate(var(--tilt)) translateY(calc(var(--lift) + 30px)) scale(0.93);
+      transition: opacity .58s var(--ease), transform .58s var(--ease);
+    }
+    /* Visible state — settle into tilt + lift, no scale */
+    .slide.visible .bc-card {
+      opacity:1;
+      transform: rotate(var(--tilt)) translateY(var(--lift));
+    }
+
+    /* Unique tilt + lift per card — playful wave pattern */
+    .bc-card:nth-child(1) { --tilt:-2deg;   --lift:-24px; transition-delay:.04s; }
+    .bc-card:nth-child(2) { --tilt: 1.6deg; --lift: 22px; transition-delay:.14s; }
+    .bc-card:nth-child(3) { --tilt:-1.2deg; --lift:-16px; transition-delay:.24s; }
+    .bc-card:nth-child(4) { --tilt: 1.8deg; --lift: 20px; transition-delay:.34s; }
+
+    /* Mint gradient micro-rule at card top */
+    .bc-card::before {
+      content:''; position:absolute; top:0; left:24px; right:24px; height:2px;
+      background:linear-gradient(90deg, var(--mint) 0%, rgba(50,210,180,0) 100%);
+    }
+
+    /* Ghost step number — large, very faint mint */
+    .bc-num {
+      font-size:80px; font-weight:800; line-height:1; letter-spacing:-.03em;
+      color:rgba(50,210,180,.13); margin-bottom:18px; user-select:none;
+    }
+
+    /* Step label */
+    .bc-label {
+      font-size:12px; font-weight:600; letter-spacing:.13em;
+      text-transform:uppercase; color:var(--mint-dk); margin-bottom:12px;
+    }
+
+    /* Card title */
+    .bc-name { font-size:26px; font-weight:700; color:var(--navy); line-height:1.2; margin-bottom:16px; }
+
+    /* Card description */
+    .bc-desc { font-size:19px; font-weight:300; color:var(--navy-50); line-height:1.68; }
+
+    /* PDF / print — flatten all cards: no tilt, no shadow, no opacity trick */
+    @media print {
+      .bc-card {
+        transform:none !important;
+        opacity:1 !important;
+        box-shadow:0 0 0 1px rgba(25,22,89,.10) !important;
+      }
+    }
+
+    /* ==========================================
+       SLIDE 4 — CONTENT OUTPUTS (Bounce Card)
+       Shares .bc-row / .bc-card theme from Slide 3
+       ========================================== */
+    #s4 { background:var(--bg); }
+
+    /* Same dot grid as Slide 3 */
+    #s4::before {
+      content:''; position:absolute; inset:0;
+      background-image:radial-gradient(circle, rgba(25,22,89,.09) 1.5px, transparent 1.5px);
+      background-size:40px 40px;
+      pointer-events:none; z-index:0;
+    }
+    #s4::after {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse 78% 74% at 50% 48%,
+        rgba(250,250,249,.93) 0%,
+        rgba(250,250,249,.44) 64%,
+        transparent 100%);
+      pointer-events:none; z-index:0;
+    }
+
+
+    /* ==========================================
+       SECTION DIVIDERS (5 & 8)
+       ========================================== */
+    /* Section dividers — off-white background, mint accent bar */
+    #s5, #s8 { background:var(--bg); }
+    .sd-inner {
+      position:absolute; inset:0; padding:80px 120px 80px 144px;
+      display:flex; flex-direction:column; justify-content:center;
+    }
+    /* Left accent bar replaces full-color background */
+    .sd-bar {
+      position:absolute; left:0; top:0; bottom:0;
+      width:8px; background:var(--mint); border-radius:0 4px 4px 0;
+    }
+    .sd-bignum {
+      font-size:240px; font-weight:800; line-height:1;
+      position:absolute; right:100px; top:50%;
+      transform:translateY(-50%);
+      color:rgba(50,210,180,.07);
+      pointer-events:none; user-select:none;
+    }
+    .sd-line { width:72px; height:3px; border-radius:2px; margin-bottom:28px; background:var(--mint); }
+    .sd-title { font-size:92px; font-weight:800; line-height:1.05; margin-bottom:20px; color:var(--navy); }
+    .sd-sub   { font-size:28px; font-weight:300; color:var(--navy-50); }
+
+    /* ==========================================
+       SLIDE 5 — SECTION DIVIDER (Premium)
+       Slide 8 keeps using the shared .sd-* above
+       ========================================== */
+
+    /* Dot grid */
+    #s5::before, #s8::before {
+      content:''; position:absolute; inset:0;
+      background-image:radial-gradient(circle, rgba(25,22,89,.08) 1.5px, transparent 1.5px);
+      background-size:40px 40px;
+      pointer-events:none; z-index:0;
+    }
+    /* Radial veil — strong on left, fades right so grid shows through */
+    #s5::after, #s8::after {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse 860px 760px at 34% 50%,
+        rgba(250,250,249,.96) 0%,
+        rgba(250,250,249,.52) 54%,
+        transparent 78%);
+      pointer-events:none; z-index:0;
+    }
+
+    /* Left vertical accent bar */
+    .sd5-bar {
+      position:absolute; left:0; top:0; bottom:0;
+      width:6px; background:var(--mint);
+      border-radius:0 3px 3px 0;
+      z-index:2;
+    }
+
+    /* Mint gradient blob — right depth */
+    .sd5-blob {
+      position:absolute; right:-200px; top:50%;
+      transform:translateY(-50%);
+      width:900px; height:900px; border-radius:50%;
+      background:radial-gradient(circle at 40% 42%,
+        rgba(50,210,180,.14) 0%,
+        rgba(50,210,180,.05) 46%,
+        transparent 68%);
+      pointer-events:none; z-index:1;
+    }
+
+    /* Abstract outline rings — right side, layered over blob */
+    .sd5-ring1 {
+      position:absolute; right:120px; top:50%;
+      transform:translateY(-50%);
+      width:540px; height:540px; border-radius:50%;
+      border:1.5px solid rgba(50,210,180,.12);
+      pointer-events:none; z-index:2;
+    }
+    .sd5-ring2 {
+      position:absolute; right:210px; top:50%;
+      transform:translateY(-50%);
+      width:360px; height:360px; border-radius:50%;
+      border:1px solid rgba(50,210,180,.08);
+      pointer-events:none; z-index:2;
+    }
+
+    /* Ghost section number — sits behind rings */
+    .sd5-bignum {
+      position:absolute; right:68px; top:50%;
+      transform:translateY(-52%);
+      font-size:520px; font-weight:800; line-height:1;
+      letter-spacing:-.05em;
+      color:rgba(50,210,180,.065);
+      pointer-events:none; user-select:none; z-index:2;
+    }
+
+    /* Left content block — vertically centered */
+    .sd5-inner {
+      position:absolute; top:50%; left:148px;
+      transform:translateY(-50%); z-index:3;
+    }
+
+    /* Short mint accent line under label */
+    .sd5-line {
+      width:56px; height:3px; border-radius:2px;
+      background:var(--mint); margin-bottom:32px;
+    }
+
+    /* Section title */
+    .sd5-title {
+      font-size:116px; font-weight:800; line-height:1.0;
+      color:var(--navy); letter-spacing:-.03em; margin-bottom:24px;
+    }
+
+    /* Subtitle */
+    .sd5-sub {
+      font-size:26px; font-weight:300;
+      color:var(--navy-50); line-height:1.5;
+    }
+
+    /* ==========================================
+       SLIDE 6 — HERO STATS (Dynamic / Asymmetric)
+       ========================================== */
+    #s6 { background:var(--bg); }
+
+    /* Dot grid */
+    #s6::before {
+      content:''; position:absolute; inset:0;
+      background-image:radial-gradient(circle, rgba(25,22,89,.08) 1.5px, transparent 1.5px);
+      background-size:40px 40px;
+      pointer-events:none; z-index:0;
+    }
+    /* Radial veil — biased left where hero lives */
+    #s6::after {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse 800px 700px at 36% 52%,
+        rgba(250,250,249,.96) 0%,
+        rgba(250,250,249,.50) 54%,
+        transparent 76%);
+      pointer-events:none; z-index:0;
+    }
+
+    /* Mint glow bloom behind hero number */
+    .hs-glow {
+      position:absolute; left:-180px; top:50%;
+      transform:translateY(-50%);
+      width:860px; height:860px; border-radius:50%;
+      background:radial-gradient(circle at 55% 48%,
+        rgba(50,210,180,.14) 0%,
+        rgba(50,210,180,.04) 46%,
+        transparent 68%);
+      pointer-events:none; z-index:1;
+    }
+
+    /* Header */
+    .on-head { position:absolute; top:80px; left:100px; right:80px; z-index:2; }
+
+    /* Thin vertical separator */
+    .hs-sep {
+      position:absolute; left:938px; top:100px; bottom:68px;
+      width:1px; background:rgba(50,210,180,.14); z-index:2;
+    }
+
+    /* ── Left hero stat ── */
+    .hs-hero {
+      position:absolute; top:215px; left:80px; width:840px; bottom:88px;
+      display:flex; flex-direction:column; justify-content:center; z-index:2;
+    }
+    .hs-hero-lbl {
+      font-size:13px; font-weight:600; letter-spacing:.14em;
+      text-transform:uppercase; color:var(--mint-dk); margin-bottom:14px;
+    }
+    .hs-hero-num {
+      font-size:206px; font-weight:800; line-height:1; letter-spacing:-.04em;
+      color:var(--navy); margin-bottom:20px;
+    }
+    .hs-hero-num .m  { color:var(--mint); }
+    .hs-hero-num .sf { font-size:.42em; color:var(--mint); vertical-align:.12em; }
+    .hs-hero-sub {
+      font-size:21px; font-weight:300; color:var(--navy-50); margin-bottom:32px;
+    }
+    .hs-hero-rule {
+      width:48px; height:2px; border-radius:1px; background:var(--mint);
+    }
+
+    /* ── Right 2×2 stat grid ── */
+    .hs-stats {
+      position:absolute; top:215px; left:978px; right:80px; bottom:88px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      grid-template-rows:1fr 1fr;
+      gap:20px; z-index:2;
+    }
+
+    /* Stagger: second column shifted down — playful offset */
+    .hs-stat:nth-child(2),
+    .hs-stat:nth-child(4) { transform:translateY(26px); }
+
+    /* Glass stat card */
+    .hs-stat {
+      background:rgba(255,255,255,.82);
+      border:1px solid rgba(25,22,89,.07);
+      border-radius:20px; padding:34px 36px;
+      backdrop-filter:blur(12px) saturate(1.2);
+      -webkit-backdrop-filter:blur(12px) saturate(1.2);
+      box-shadow:0 2px 20px rgba(25,22,89,.05);
+      display:flex; flex-direction:column; justify-content:center;
+      position:relative; overflow:hidden;
+    }
+    .hs-stat::before {
+      content:''; position:absolute; top:0; left:20px; right:20px; height:1.5px;
+      background:linear-gradient(90deg, var(--mint) 0%, rgba(50,210,180,0) 100%);
+    }
+
+    .hs-stat-lbl {
+      font-size:11px; font-weight:600; letter-spacing:.13em;
+      text-transform:uppercase; color:var(--mint-dk); margin-bottom:10px;
+    }
+    .hs-stat-val {
+      font-size:68px; font-weight:800; line-height:1; letter-spacing:-.03em;
+      color:var(--navy); margin-bottom:8px;
+    }
+    .hs-stat-val .m { color:var(--mint); }
+    .hs-stat-sub {
+      font-size:15px; font-weight:300; color:var(--navy-50); line-height:1.5;
+    }
+
+    /* Bottom note */
+    .hs-note {
+      position:absolute; bottom:30px; left:978px; right:80px;
+      text-align:center;
+      font-size:14px; font-weight:400; letter-spacing:.06em;
+      color:rgba(25,22,89,.28);
+    }
+
+    /* PDF — collapse stagger */
+    @media print {
+      .hs-stat:nth-child(2), .hs-stat:nth-child(4) { transform:none !important; }
+    }
+
+    /* ==========================================
+       SLIDE 7 — WORKFLOW JOURNEY (circles)
+       ========================================== */
+    #s7 { background:var(--bg); }
+    #s7::before {
+      content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+      background-image: radial-gradient(circle, rgba(25,22,89,.07) 1.5px, transparent 1.5px);
+      background-size:40px 40px;
+    }
+    #s7::after {
+      content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+      background:radial-gradient(ellipse 90% 60% at 50% 56%, rgba(250,250,249,.92) 0%, transparent 100%);
+    }
+    /* Header */
+    .wj-head  { position:absolute; top:72px; left:0; right:0; text-align:center; z-index:3; }
+    .wj-title { font-size:60px; font-weight:800; color:var(--navy); line-height:1; margin-bottom:14px; }
+    .wj-sub   { font-size:20px; font-weight:300; color:var(--navy-50); line-height:1.5; }
+    /* Mint glow */
+    .wj-glow {
+      position:absolute; left:50%; top:56%; transform:translate(-50%,-50%);
+      width:1200px; height:420px; border-radius:50%;
+      background:radial-gradient(ellipse, rgba(50,210,180,.07) 0%, transparent 70%);
+      z-index:0; pointer-events:none;
+    }
+    /* Rail SVG */
+    .wj-rail-svg {
+      position:absolute; inset:0; width:1920px; height:1080px;
+      z-index:1; pointer-events:none; overflow:visible;
+    }
+    .wj-rail {
+      fill:none; stroke:rgba(50,210,180,.40); stroke-width:2; stroke-linecap:round;
+      stroke-dasharray:1700; stroke-dashoffset:1700;
+    }
+    @keyframes wj-rail-draw { to { stroke-dashoffset:0; } }
+    #s7.visible .wj-rail { animation:wj-rail-draw 1.0s var(--ease) 0.05s both; }
+    /* Steps row */
+    .wj-steps {
+      position:absolute; left:100px; right:100px; top:420px;
+      display:flex; align-items:flex-start; z-index:2;
+    }
+    .wj-step {
+      flex:1; display:flex; flex-direction:column; align-items:center; position:relative;
+      opacity:0; transform:scale(0.88) translateY(18px);
+      transition: opacity .52s var(--ease), transform .52s var(--ease);
+    }
+    #s7.visible .wj-step:nth-child(1) { opacity:1; transform:none; transition-delay:.06s; }
+    #s7.visible .wj-step:nth-child(2) { opacity:1; transform:none; transition-delay:.16s; }
+    #s7.visible .wj-step:nth-child(3) { opacity:1; transform:none; transition-delay:.26s; }
+    #s7.visible .wj-step:nth-child(4) { opacity:1; transform:none; transition-delay:.36s; }
+    #s7.visible .wj-step:nth-child(5) { opacity:1; transform:none; transition-delay:.46s; }
+    /* Circle */
+    .wj-circle {
+      width:224px; height:224px; border-radius:50%;
+      background:rgba(255,255,255,.88);
+      border:1.5px solid rgba(50,210,180,.28);
+      backdrop-filter:blur(14px) saturate(1.2);
+      -webkit-backdrop-filter:blur(14px) saturate(1.2);
+      box-shadow:0 0 52px rgba(50,210,180,.10), 0 4px 22px rgba(25,22,89,.07),
+                 inset 0 1px 0 rgba(255,255,255,.70);
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+    }
+    .wj-circle-num {
+      font-size:11px; font-weight:600; letter-spacing:.16em;
+      text-transform:uppercase; color:var(--mint-dk);
+    }
+    .wj-circle-name {
+      font-size:21px; font-weight:700; color:var(--navy);
+      line-height:1.3; text-align:center; padding:0 18px;
+    }
+    .wj-step-desc {
+      margin-top:22px; font-size:15px; font-weight:300;
+      color:var(--navy-50); text-align:center; line-height:1.55; max-width:200px;
+    }
+    /* Print — all static, fully visible */
+    @media print {
+      .wj-step { opacity:1 !important; transform:none !important; transition:none !important; }
+      .wj-rail  { stroke-dashoffset:0 !important; animation:none !important; }
+    }
+    /* Reduced motion — skip animations */
+    @media (prefers-reduced-motion:reduce) {
+      .wj-step { transition-duration:0.01ms !important; }
+      #s7.visible .wj-rail { animation:none !important; stroke-dashoffset:0 !important; }
+    }
+
+    /* ==========================================
+       SLIDE 9 — ARTICLE WORK
+       ========================================== */
+    #s9 { background:var(--bg); }
+    .aw-grid {
+      position:absolute; inset:0;
+      display:grid; grid-template-columns:40% 60%;
+    }
+    .aw-left { padding:72px 44px 72px 80px; display:flex; flex-direction:column; justify-content:center; }
+    .aw-right { padding:52px 72px 80px 28px; position:relative; display:flex; align-items:center; overflow:visible; }
+    .aw-stats {
+      display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px;
+    }
+    .aw-stat {
+      background:var(--white); border-radius:12px; padding:18px 20px;
+      border:1px solid var(--navy-06);
+    }
+    .aw-sv  { font-size:52px; font-weight:800; color:var(--navy); line-height:1; }
+    .aw-sv.m { color:var(--mint); }
+    .aw-sl  { font-size:14px; font-weight:400; color:var(--navy-50); margin-top:4px; }
+    /* Mockup stack */
+    .aw-mockup-wrap { position:relative; width:100%; }
+    .aw-main-img {
+      width:100%; border-radius:14px; overflow:hidden; position:relative; z-index:1;
+      box-shadow:0 12px 56px rgba(25,22,89,.16), 0 2px 12px rgba(25,22,89,.08);
+    }
+    .aw-main-img img { width:100%; display:block; max-height:640px; object-fit:cover; object-position:top; }
+    .aw-sec-img {
+      position:absolute; bottom:-36px; left:-52px;
+      width:52%; border-radius:10px; z-index:2;
+      box-shadow:0 8px 36px rgba(25,22,89,.22), 0 2px 10px rgba(25,22,89,.12);
+      border:2.5px solid rgba(255,255,255,.95);
+      overflow:hidden;
+    }
+    .aw-sec-img img { width:100%; display:block; }
+    @media print {
+      .aw-sec-img { position:static; width:46%; margin-top:14px; border:1px solid var(--navy-06); }
+    }
+
+    /* ==========================================
+       SLIDE 10 — FACEBOOK INFOGRAPHIC
+       ========================================== */
+    #s10 { background:var(--bg); }
+    .fb-grid-outer {
+      position:absolute; inset:0;
+      display:grid; grid-template-columns:440px 1fr;
+    }
+    .fb-left { padding:80px; display:flex; flex-direction:column; justify-content:center; }
+    .fb-right { padding:56px 64px 56px 32px; display:flex; flex-direction:column; justify-content:center; }
+    .fb-big { font-size:160px; font-weight:800; color:var(--navy); line-height:1; }
+    .fb-big .m { color:var(--mint); }
+    /* Poster-card row — auto height, no fill */
+    .fb-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:16px; }
+    .fb-card {
+      background:var(--white); border-radius:16px;
+      border:1px solid rgba(25,22,89,.07);
+      padding:10px;
+      box-shadow:0 6px 28px rgba(25,22,89,.10), 0 1px 6px rgba(25,22,89,.05);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+    }
+    /* Poster image — contain (no crop), auto height, max ~530px */
+    #s10 .fb-card .ph-asset {
+      position:static; width:100%; height:auto;
+      max-height:530px; object-fit:contain;
+      border-radius:6px; display:block;
+    }
+    .ph-icon { font-size:28px; opacity:.55; }
+    .ph-lbl  { font-size:15px; color:rgba(50,210,180,.65); text-align:center; padding:0 14px; }
+    @media print {
+      .fb-card { box-shadow:none; border:1px solid var(--navy-06); }
+    }
+
+    /* ==========================================
+       SLIDE 11 — VIDEO / SHORT-FORM
+       ========================================== */
+    #s11 { background:var(--bg); }
+    .vd-top {
+      position:absolute; top:64px; left:88px; right:88px;
+      display:grid; grid-template-columns:1fr auto; align-items:end; gap:34px;
+      padding-bottom:28px; border-bottom:1px solid var(--navy-06);
+    }
+    .vd-total {
+      display:flex; flex-direction:column; gap:12px;
+    }
+    .vd-bignum {
+      font-size:118px; font-weight:800; line-height:.92; color:var(--navy);
+      letter-spacing:0;
+    }
+    .vd-bignum .m { color:var(--mint); }
+    .vd-ttl  { font-size:32px; font-weight:700; color:var(--navy); }
+    .vd-tags { display:flex; gap:12px; align-items:center; justify-content:flex-end; margin-bottom:6px; }
+    .vd-tag  {
+      min-width:178px; padding:12px 18px; border-radius:999px;
+      font-size:18px; font-weight:600; text-align:center;
+      border:1px solid transparent;
+    }
+    .t-fb { background:var(--mint-lt); color:var(--mint-dk); }
+    .t-tt { background:var(--navy-06); color:var(--navy); }
+    .vd-cards {
+      position:absolute; top:312px; left:88px; right:88px; height:650px;
+      display:grid; grid-template-columns:repeat(3,1fr); gap:34px;
+    }
+    .vd-card {
+      position:relative; background:rgba(255,255,255,.76); border-radius:16px;
+      border:1px solid rgba(25,22,89,.055);
+      box-shadow:0 8px 24px rgba(25,22,89,.055), 0 1px 4px rgba(25,22,89,.035);
+      overflow:hidden; padding:28px 28px 20px;
+      display:grid; grid-template-rows:auto 1fr auto; gap:18px;
+    }
+    .vd-head { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; min-height:62px; }
+    .vd-rank {
+      width:54px; height:54px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      background:var(--mint); color:var(--white);
+      font-size:20px; font-weight:800; line-height:1;
+      box-shadow:0 10px 22px rgba(50,210,180,.28);
+      flex:0 0 auto;
+    }
+    .vd-name { font-size:27px; font-weight:800; color:var(--navy); line-height:1.18; text-align:right; }
+    .vd-phone-pair { position:relative; height:430px; margin-top:2px; }
+    .vd-phone {
+      position:absolute; top:10px; width:236px; height:426px;
+      border-radius:40px; padding:14px;
+      background:linear-gradient(145deg, #3A4260 0%, #2B3144 48%, #202638 100%);
+      border:1px solid rgba(255,255,255,.24);
+      box-shadow:
+        0 22px 42px rgba(25,22,89,.18),
+        0 2px 8px rgba(25,22,89,.08),
+        inset 0 1px 0 rgba(255,255,255,.18);
+      opacity:0; transform:translateY(22px);
+      transition:opacity .6s var(--ease), transform .6s var(--ease);
+    }
+    .vd-phone::before {
+      content:""; position:absolute; inset:7px; border-radius:34px;
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:inset 0 0 0 1px rgba(58,66,96,.42);
+      pointer-events:none; z-index:3;
+    }
+    .vd-phone.is-reel { left:20px; top:10px; z-index:1; }
+    .vd-phone.is-tiktok { right:20px; top:0; z-index:2; }
+    .slide.visible .vd-card .vd-phone { opacity:1; transform:translateY(0); }
+    .slide.visible .vd-card .vd-phone.is-tiktok { transition-delay:.1s; }
+    .vd-notch {
+      position:absolute; top:13px; left:50%; width:72px; height:18px;
+      transform:translateX(-50%); border-radius:0 0 12px 12px;
+      background:#1E2436; z-index:5;
+      box-shadow:0 1px 0 rgba(255,255,255,.12);
+    }
+    .vd-screen {
+      position:relative; width:100%; height:100%; overflow:hidden;
+      border-radius:28px; background:linear-gradient(180deg, var(--mint-lt), #f8fffd);
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow:inset 0 0 0 1px rgba(58,66,96,.34);
+    }
+    .vd-shot {
+      position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top;
+    }
+    .vd-ph {
+      position:absolute; inset:0; display:none;
+      align-items:center; justify-content:center; text-align:center;
+      padding:28px 14px; font-size:15px; line-height:1.35;
+      color:rgba(25,22,89,.52); border:1px dashed rgba(50,210,180,.42);
+      background:var(--mint-lt);
+    }
+    .vd-platform {
+      position:absolute; right:12px; bottom:12px; z-index:4;
+      padding:5px 9px; border-radius:999px;
+      font-size:11.5px; font-weight:800; color:#fff;
+      background:rgba(25,22,89,.76); backdrop-filter:blur(8px);
+    }
+    .vd-platform.fb { background:rgba(24,119,242,.88); }
+    .vd-platform.tt { background:rgba(25,22,89,.84); }
+    .vd-views {
+      display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;
+      border-top:1px solid rgba(25,22,89,.055); padding-top:14px;
+    }
+    .vd-view {
+      border-radius:999px; background:rgba(25,22,89,.032);
+      padding:8px 10px 7px; text-align:center;
+    }
+    .vd-view b { display:block; color:var(--navy); font-size:20px; line-height:1; margin-bottom:4px; }
+    .vd-view span { color:var(--navy-50); font-size:12px; font-weight:600; }
+    .vd-view.total { background:var(--mint-lt); }
+    .vd-view.total b { color:var(--mint-dk); }
+    @media print {
+      .vd-card, .vd-phone { box-shadow:none; }
+      .vd-card, .vd-phone, .vd-view { border-color:var(--navy-06); }
+      #s11 .reveal, #s11 .reveal-scale, .vd-card, .vd-phone {
+        opacity:1 !important; transform:none !important; transition:none !important;
+      }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      .vd-card, .vd-phone { opacity:1 !important; transform:none !important; transition:none !important; }
+    }
+
+    /* ==========================================
+       SLIDE 12 — GRAPHIC / VISUAL DIRECTION
+       ========================================== */
+    #s12 { background:var(--bg); }
+    /* Outer two-column grid — vertically centered */
+    .gr-grid {
+      position:absolute; inset:0;
+      display:grid; grid-template-columns:440px 1fr;
+      align-items:center;
+    }
+    .gr-left  { padding:80px 48px 80px 80px; }
+    .gr-right { padding:0 64px 0 28px; }
+    .gr-big  { font-size:140px; font-weight:800; color:var(--navy); line-height:1; }
+    .gr-big .m { color:var(--mint); }
+    /* Fixed-height showcase frame — keeps everything inside slide bounds */
+    .gr-showcase {
+      height:780px;
+      display:grid;
+      grid-template-columns:1.7fr 0.8fr;
+      grid-template-rows:1fr 1fr 1fr;
+      gap:18px;
+    }
+    /* Shared card frame */
+    .gr-ph {
+      border-radius:14px;
+      background:var(--white);
+      border:1px solid rgba(25,22,89,.08);
+      box-shadow:0 4px 20px rgba(25,22,89,.09), 0 1px 4px rgba(25,22,89,.05);
+      position:relative; overflow:hidden;
+    }
+    /* Hero card — spans all 3 rows in column 1 */
+    .gr-main {
+      grid-column:1; grid-row:1 / 4;
+      border-radius:16px;
+      box-shadow:0 8px 40px rgba(25,22,89,.14), 0 2px 10px rgba(25,22,89,.07);
+    }
+    /* Images fill card, top-anchored to preserve titles */
+    #s12 .ph-asset {
+      object-fit:cover;
+      object-position:center top;
+    }
+    @media print {
+      .gr-ph { box-shadow:none; border:1px solid var(--navy-06); }
+    }
+
+    /* ==========================================
+       SLIDES 13–14 — ARTICLE VISUAL OVERVIEW
+       ========================================== */
+    #s13, #s14 { background:var(--bg); }
+    .pw-head { position:absolute; top:70px; left:80px; right:112px; }
+    .pw-title {
+      font-size:68px; font-weight:800; line-height:1.05;
+      color:var(--navy); margin-bottom:12px;
+    }
+    .pw-subtitle {
+      font-size:24px; font-weight:300; line-height:1.45;
+      color:var(--navy-50); max-width:760px;
+    }
+    .pw-wall {
+      position:absolute; top:238px; left:72px; right:96px; bottom:96px;
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      grid-template-rows:repeat(6,1fr);
+      grid-auto-flow:dense;
+      gap:18px;
+    }
+    .pw-item {
+      background:rgba(255,255,255,.72); border-radius:18px;
+      border:1px solid rgba(25,22,89,.075);
+      box-shadow:0 10px 32px rgba(25,22,89,.08), 0 1px 5px rgba(25,22,89,.04);
+      position:relative; overflow:hidden;
+    }
+    .pw-cover { grid-column:span 4; grid-row:span 3; }
+    .pw-wide { grid-column:span 4; grid-row:span 2; }
+    .pw-banner { grid-column:span 4; grid-row:span 1; background:var(--white); }
+    #s13 .pw-item .ph-asset,
+    #s14 .pw-item .ph-asset {
+      position:absolute; inset:0; width:100%; height:100%;
+      object-fit:cover; object-position:center center; border-radius:inherit;
+    }
+    #s13 .pw-banner .ph-asset,
+    #s14 .pw-banner .ph-asset {
+      object-fit:cover; object-position:center center;
+    }
+    /* .pw-index removed — numbered circles no longer displayed on tiles */
+    /* .pw-type removed — Article Visual pill no longer used */
+    .pw-lbl {
+      position:absolute; inset:0; display:none; z-index:2;
+      align-items:center; justify-content:center; text-align:center;
+      padding:0 22px; color:rgba(25,22,89,.52);
+      background:var(--mint-lt); font-size:18px; line-height:1.35;
+      border:1.5px dashed rgba(50,210,180,.36); border-radius:inherit;
+    }
+    @media print {
+      .pw-item { box-shadow:none; border:1px solid var(--navy-06); }
+      #s13 .reveal, #s13 .reveal-scale,
+      #s14 .reveal, #s14 .reveal-scale { opacity:1 !important; transform:none !important; transition:none !important; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      #s13 .reveal, #s13 .reveal-scale,
+      #s14 .reveal, #s14 .reveal-scale { opacity:1 !important; transform:none !important; transition:none !important; }
+    }
+
+    /* ==========================================
+       SLIDE 15 — SWOT ANALYSIS (Circular layout)
+       ========================================== */
+    #s15 { background:var(--bg); }
+    #s15::before {
+      content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+      background-image:radial-gradient(circle, rgba(25,22,89,.07) 1.5px, transparent 1.5px);
+      background-size:40px 40px;
+    }
+    #s15::after {
+      content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+      background:radial-gradient(ellipse 80% 70% at 50% 52%,
+        rgba(250,250,249,.94) 0%, transparent 100%);
+    }
+    /* Header */
+    .sw-head {
+      position:absolute; top:52px; left:0; right:0;
+      text-align:center; z-index:3;
+    }
+    .sw-title {
+      font-size:52px; font-weight:800; color:var(--navy);
+      line-height:1; margin-bottom:10px;
+    }
+    .sw-sub {
+      font-size:18px; font-weight:300; color:var(--navy-50); line-height:1.5;
+    }
+    /* SVG connector lines */
+    .sw-svg {
+      position:absolute; inset:0; width:1920px; height:1080px;
+      z-index:1; pointer-events:none; overflow:visible;
+    }
+    .sw-line {
+      fill:none; stroke:rgba(50,210,180,.35); stroke-width:1.5;
+      stroke-dasharray:6 5; stroke-linecap:round;
+    }
+    /* Center circle — navy with mint label */
+    .sw-center {
+      position:absolute; width:280px; height:280px;
+      left:820px; top:450px;
+      border-radius:50%; background:var(--navy);
+      box-shadow:
+        0 0 60px rgba(50,210,180,.13),
+        0 12px 40px rgba(25,22,89,.24),
+        inset 0 1px 0 rgba(255,255,255,.08);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:8px;
+      z-index:3;
+      opacity:0; transform:scale(0.88);
+      transition:opacity .55s var(--ease), transform .55s var(--ease);
+    }
+    #s15.visible .sw-center { opacity:1; transform:scale(1); }
+    .sw-c-label {
+      font-size:11px; font-weight:700; letter-spacing:.18em;
+      text-transform:uppercase; color:var(--mint);
+    }
+    .sw-c-title {
+      font-size:38px; font-weight:800; color:var(--white);
+      line-height:1; letter-spacing:-.02em;
+    }
+    /* Outer SWOT ovals */
+    .sw-node {
+      position:absolute; width:320px; height:360px;
+      border-radius:50%;
+      background:rgba(255,255,255,.88);
+      border:1.5px solid rgba(25,22,89,.09);
+      backdrop-filter:blur(14px) saturate(1.1);
+      -webkit-backdrop-filter:blur(14px) saturate(1.1);
+      box-shadow:
+        0 6px 32px rgba(25,22,89,.07),
+        0 1px 6px rgba(25,22,89,.04),
+        inset 0 1px 0 rgba(255,255,255,.80);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      padding:24px 22px; text-align:center;
+      z-index:3;
+      opacity:0; transform:translateY(16px) scale(0.92);
+      transition:opacity .6s var(--ease), transform .6s var(--ease);
+    }
+    #s15.visible .sw-node { opacity:1; transform:none; }
+    /* Staggered reveal — S first, clockwise */
+    #s15.visible .sw-s { transition-delay:.18s; }
+    #s15.visible .sw-w { transition-delay:.30s; }
+    #s15.visible .sw-o { transition-delay:.42s; }
+    #s15.visible .sw-t { transition-delay:.54s; }
+    /* Absolute positions — inset ~10% from edges (center-circle center: 960,590) */
+    .sw-s { left:160px;  top:220px; }  /* oval center: 320,400 */
+    .sw-w { left:1440px; top:220px; }  /* oval center: 1600,400 */
+    .sw-o { left:160px;  top:650px; }  /* oval center: 320,830 */
+    .sw-t { left:1440px; top:650px; }  /* oval center: 1600,830 */
+    /* Node internals */
+    .sw-letter {
+      font-size:58px; font-weight:800; line-height:1; margin-bottom:6px;
+    }
+    .sw-name {
+      font-size:16px; font-weight:700; letter-spacing:.12em;
+      text-transform:uppercase; margin-bottom:14px;
+    }
+    .sw-sep {
+      width:34px; height:2px; border-radius:1px;
+      margin-bottom:14px; flex-shrink:0;
+    }
+    .sw-ul { list-style:none; width:100%; }
+    .sw-ul li {
+      font-size:17px; font-weight:300; color:var(--navy);
+      line-height:1.55; opacity:.82; margin-bottom:7px;
+    }
+    .sw-ul li:last-child { margin-bottom:0; }
+    /* Per-quadrant accent colors */
+    .sw-s .sw-letter, .sw-s .sw-name { color:var(--mint-dk); }
+    .sw-s .sw-sep { background:var(--mint); }
+    .sw-s { border-color:rgba(50,210,180,.25); }
+    .sw-w .sw-letter, .sw-w .sw-name { color:#B07830; }
+    .sw-w .sw-sep { background:#C4893A; }
+    .sw-w { border-color:rgba(196,137,58,.22); }
+    .sw-o .sw-letter, .sw-o .sw-name { color:var(--navy); }
+    .sw-o .sw-sep { background:var(--navy); }
+    .sw-t .sw-letter, .sw-t .sw-name { color:#A04832; }
+    .sw-t .sw-sep { background:#B05640; }
+    .sw-t { border-color:rgba(176,86,64,.22); }
+    /* Print / reduced-motion */
+    @media print {
+      .sw-node, .sw-center {
+        opacity:1 !important; transform:none !important; transition:none !important;
+      }
+      .sw-line { stroke-dasharray:none; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      .sw-node, .sw-center { opacity:1 !important; transform:none !important; }
+    }
+
+    /* ==========================================
+       SLIDE 16 — CLOSING (redesign)
+       ========================================== */
+    #s16 { background:var(--bg); }
+    /* Subtle dot grid */
+    #s16::before {
+      content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+      background-image:radial-gradient(circle, rgba(25,22,89,.05) 1.5px, transparent 1.5px);
+      background-size:40px 40px;
+    }
+    /* ── Top cards area ── */
+    .cl-cards {
+      position:absolute; top:68px; left:80px; right:80px; height:520px;
+      display:grid; grid-template-columns:1fr 1fr; gap:24px; z-index:1;
+    }
+    .cl-card {
+      background:rgba(255,255,255,.86);
+      border:1px solid rgba(25,22,89,.08);
+      border-radius:20px; padding:44px 52px;
+      box-shadow:0 4px 24px rgba(25,22,89,.07), 0 1px 6px rgba(25,22,89,.04);
+      display:flex; flex-direction:column;
+    }
+    .cl-card-learning {
+      background:rgba(50,210,180,.05);
+      border-color:rgba(50,210,180,.22);
+    }
+    /* Card section tag */
+    .cl-head {
+      font-size:11px; font-weight:700; letter-spacing:.18em;
+      text-transform:uppercase; color:var(--mint-dk); margin-bottom:12px;
+    }
+    /* Card main title */
+    .cl-card-title {
+      font-size:30px; font-weight:800; color:var(--navy);
+      line-height:1.1; margin-bottom:28px; padding-bottom:20px;
+      border-bottom:1.5px solid rgba(25,22,89,.07);
+    }
+    /* Bullet list */
+    .cl-ul { list-style:none; display:flex; flex-direction:column; gap:18px; }
+    .cl-ul li {
+      display:flex; align-items:flex-start; gap:14px;
+      font-size:19px; font-weight:300; color:var(--navy); line-height:1.6;
+      opacity:.82;
+    }
+    .cl-ul li::before {
+      content:''; width:6px; height:6px; border-radius:50%;
+      background:var(--mint); margin-top:10px; flex-shrink:0;
+    }
+    /* ── Hairline divider ── */
+    .cl-divider {
+      position:absolute; top:610px; left:80px; right:80px;
+      height:1px; background:rgba(25,22,89,.09); z-index:1;
+    }
+    /* ── Closing section ── */
+    .cl-closing {
+      position:absolute; top:632px; left:0; right:0; bottom:0;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 80px; z-index:1;
+    }
+    /* Thank you — left hero */
+    .cl-thankyou-block { flex:1; }
+    .cl-ty {
+      font-size:92px; font-weight:800; color:var(--navy);
+      line-height:1; letter-spacing:-.03em;
+    }
+    .cl-ty .m { color:var(--mint); }
+    .cl-name {
+      font-size:17px; font-weight:300; color:var(--navy-50);
+      margin-top:14px; line-height:1.65;
+    }
+    /* Info block — right */
+    .cl-info {
+      display:flex; flex-direction:column; align-items:flex-end;
+      gap:18px; flex-shrink:0;
+    }
+    .cl-logos { display:flex; align-items:center; gap:20px; }
+    .cl-adv-block { text-align:right; }
+    .cl-adv-lbl {
+      font-size:13px; font-weight:700; letter-spacing:.14em;
+      text-transform:uppercase; color:var(--mint-dk); margin-bottom:6px;
+    }
+    .cl-adv-name {
+      font-size:19px; font-weight:400; color:var(--navy); opacity:.65; line-height:1.6;
+    }
+    @media print {
+      #s16::before { display:none; }
+      .cl-card, .cl-closing { opacity:1 !important; transform:none !important; }
+    }
+
+    /* ==========================================
+       SLIDE COUNTER (outside stage — won't scale)
+       ========================================== */
+    .pg {
+      position:fixed; bottom:26px; left:50%;
+      transform:translateX(-50%);
+      z-index:1000; font-family:var(--f);
+      font-size:14px; font-weight:400; letter-spacing:.08em;
+      color:rgba(255,255,255,.75);
+      background:rgba(25,22,89,.55);
+      backdrop-filter:blur(10px) saturate(1.4);
+      -webkit-backdrop-filter:blur(10px) saturate(1.4);
+      padding:6px 18px; border-radius:20px;
+      pointer-events:none;
+    }
+    @media print { .pg { display:none; } }
+
+    /* ==========================================
+       SLIDE DOT NAVIGATION
+       ========================================== */
+    .dot-nav {
+      position:fixed; right:26px; top:50%;
+      transform:translateY(-50%);
+      z-index:1200;
+      display:flex; flex-direction:column; align-items:center; gap:10px;
+      padding:10px 8px;
+    }
+    .dot-nav button {
+      width:8px; height:8px; border:0; border-radius:999px;
+      padding:0; background:rgba(25,22,89,.25);
+      cursor:pointer;
+      transition:
+        transform .22s var(--ease),
+        background-color .22s var(--ease),
+        box-shadow .22s var(--ease),
+        opacity .22s var(--ease);
+      opacity:.9;
+    }
+    .dot-nav button:hover {
+      transform:scale(1.45);
+      background:rgba(25,22,89,.48);
+      box-shadow:0 0 0 5px rgba(25,22,89,.08);
+    }
+    .dot-nav button.active {
+      width:12px; height:12px;
+      background:var(--mint);
+      box-shadow:0 0 0 6px rgba(50,210,180,.16), 0 6px 18px rgba(50,210,180,.32);
+      opacity:1;
+    }
+    .dot-nav button:focus-visible {
+      outline:2px solid var(--mint);
+      outline-offset:4px;
+    }
+    @media (max-width:700px) {
+      .dot-nav { right:12px; gap:7px; padding:8px 5px; }
+      .dot-nav button { width:6px; height:6px; }
+      .dot-nav button.active { width:9px; height:9px; }
+    }
+    @media (max-width:520px) {
+      .dot-nav { display:none; }
+    }
+    @media print { .dot-nav { display:none !important; } }
+
+    /* ==========================================
+       INLINE EDIT TOGGLE
+       ========================================== */
+    .edit-hotzone {
+      position:fixed; top:0; left:0;
+      width:80px; height:80px; z-index:10000; cursor:pointer;
+    }
+    .edit-toggle {
+      position:fixed; top:20px; left:20px; z-index:10001;
+      background:var(--navy); color:var(--white);
+      border:none; border-radius:10px; padding:9px 16px;
+      font-family:var(--f); font-size:14px; font-weight:500;
+      cursor:pointer; opacity:0; pointer-events:none;
+      transition:opacity .3s ease;
+    }
+    .edit-toggle.show, .edit-toggle.active { opacity:1; pointer-events:auto; }
+    @media print { .edit-hotzone,.edit-toggle { display:none !important; } }
+
+    /* ==========================================
+       PLACEHOLDER HELPER + ASSET IMAGE LOADER
+       ========================================== */
+    .ph {
+      background:var(--mint-lt); border-radius:14px;
+      border:1.5px dashed rgba(50,210,180,.35);
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+      position:relative; overflow:hidden;
+    }
+
+    /* Make every placeholder container image-ready */
+    .fb-card   { position:relative; overflow:hidden; }
+    .gr-ph     { position:relative; overflow:hidden; }
+    .vd-thumb  { position:relative; overflow:hidden; }
+
+    /* Asset image — fills container absolutely; shown when file exists */
+    .ph-asset {
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      object-fit:cover;
+      border-radius:inherit;
+      display:block; z-index:1;
+    }
+
+    /* .pw-type badge removed */
+
+    /* ==========================================
+       LOGO IMAGES
+       upbean.png  — main company identity
+       admission-premium.png — platform context only
+       ========================================== */
+    .logo-upbean {
+      height:52px; width:auto; object-fit:contain; display:block;
+    }
+    .logo-ap {
+      height:110px; width:auto; object-fit:contain; display:block; opacity:.82;
+    }
+
+    /* ==========================================
+       EXPORT MODE  (?export=1)
+       Disables all motion so Playwright gets
+       a fully-rendered, static screenshot.
+       ========================================== */
+    body.export-mode *,
+    body.export-mode *::before,
+    body.export-mode *::after {
+      transition: none !important;
+      animation: none !important;
+      animation-duration: 0s !important;
+      animation-delay: 0s !important;
+    }
+    /* Force every reveal element to its final visible state.
+       NOTE: .stagger is intentionally excluded — it may carry
+       layout-critical transforms (e.g. translate(-50%,-52%) on .cv-center). */
+    body.export-mode .reveal,
+    body.export-mode .reveal-scale,
+    body.export-mode .stagger > * {
+      opacity: 1 !important;
+      transform: none !important;
+      visibility: visible !important;
+    }
+    /* SWOT circles / nodes */
+    body.export-mode .sw-center,
+    body.export-mode .sw-node {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    /* Hide chrome that doesn't belong in PDF */
+    body.export-mode .dot-nav,
+    body.export-mode .deck-controls,
+    body.export-mode .pg,
+    body.export-mode [data-edit-btn] {
+      display: none !important;
+    }
+    /* Every slide is laid out; JS controls which is visible */
+    body.export-mode .slide {
+      pointer-events: none;
+    }
+    /* Extra export-mode force for animated-in elements not covered above */
+    body.export-mode .vd-card,
+    body.export-mode .vd-phone {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    /* ==========================================
+       PRESENTATION ANIMATIONS
+       All rules guarded by body:not(.export-mode)
+       — silently no-ops when ?export=1 is set.
+       ========================================== */
+
+    /* ── 1. Slide cross-fade + scale entrance ── */
+    body:not(.export-mode) .slide {
+      transform: scale(0.975);
+      transition:
+        opacity   .44s cubic-bezier(0.16,1,0.3,1),
+        transform .44s cubic-bezier(0.16,1,0.3,1),
+        visibility 0s linear .44s;   /* hold visibility during fade-out */
+    }
+    body:not(.export-mode) .slide.active,
+    body:not(.export-mode) .slide.visible {
+      transform: scale(1);
+      transition:
+        opacity   .44s cubic-bezier(0.16,1,0.3,1),
+        transform .44s cubic-bezier(0.16,1,0.3,1),
+        visibility 0s linear 0s;     /* show instantly on enter */
+    }
+
+    /* ── 2. Cover slide — ambient blob / ring motion ── */
+    @keyframes prs-float-a {
+      0%,100% { transform:translate(0,0) scale(1); }
+      35%     { transform:translate(20px,-14px) scale(1.025); }
+      70%     { transform:translate(-14px,9px) scale(0.975); }
+    }
+    @keyframes prs-float-b {
+      0%,100% { transform:translate(0,0) scale(1); }
+      42%     { transform:translate(-17px,13px) scale(1.03); }
+      78%     { transform:translate(11px,-9px) scale(0.97); }
+    }
+    @keyframes prs-ring-drift {
+      to { transform:rotate(360deg); }
+    }
+    body:not(.export-mode) .s1-warm  { animation:prs-float-a 14s ease-in-out infinite; }
+    body:not(.export-mode) .s1-mint  { animation:prs-float-b 18s ease-in-out infinite; }
+    body:not(.export-mode) .s1-blue  { animation:prs-float-a 22s ease-in-out infinite reverse; }
+    body:not(.export-mode) .s1-ring  { animation:prs-ring-drift 44s linear infinite; }
+    body:not(.export-mode) .s1-ring2 { animation:prs-ring-drift 64s linear infinite reverse; }
+    body:not(.export-mode) .s1-ring3 { animation:prs-ring-drift 30s linear infinite; }
+    body:not(.export-mode) .s1-dot1  { animation:prs-float-b 9s ease-in-out infinite; }
+    body:not(.export-mode) .s1-dot2  { animation:prs-float-a 12s ease-in-out infinite 2s; }
+
+    /* ── 3. Active nav dot pulse ── */
+    @keyframes prs-dot-pulse {
+      0%,100% { box-shadow:0 0 0 0 rgba(50,210,180,.55); }
+      60%     { box-shadow:0 0 0 7px rgba(50,210,180,0); }
+    }
+    body:not(.export-mode) .dot-nav button.active {
+      animation:prs-dot-pulse 2.4s ease-out infinite;
+    }
+
+    /* ── 4. Hover lift — glass info / closing cards ── */
+    body:not(.export-mode) .co-card,
+    body:not(.export-mode) .cl-card {
+      transition:transform .28s cubic-bezier(0.16,1,0.3,1),
+                 box-shadow .28s ease;
+    }
+    body:not(.export-mode) .co-card:hover {
+      transform:translateY(-5px) !important;
+      box-shadow:0 28px 64px rgba(25,22,89,.14),
+                 0 4px 14px rgba(25,22,89,.07) !important;
+    }
+    body:not(.export-mode) .cl-card:hover {
+      transform:translateY(-4px) !important;
+      box-shadow:0 24px 56px rgba(25,22,89,.12) !important;
+    }
+
+    /* ── 5. Hover zoom — bento gallery tiles ── */
+    body:not(.export-mode) .pw-item {
+      transition:transform .25s cubic-bezier(0.16,1,0.3,1),
+                 box-shadow .25s ease;
+    }
+    body:not(.export-mode) .pw-item:hover {
+      transform:scale(1.028) !important;
+      z-index:4;
+      box-shadow:0 24px 56px rgba(25,22,89,.20),
+                 0 4px 16px rgba(25,22,89,.10) !important;
+    }
+
+    /* ── 6. Slide 11 phone cards — stagger + fan entrance ── */
+    body:not(.export-mode) .vd-card {
+      opacity:0;
+      transform:translateY(40px);
+      transition:opacity .55s var(--ease),
+                 transform .4s cubic-bezier(0.16,1,0.3,1),
+                 box-shadow .3s ease;
+    }
+    body:not(.export-mode) #s11.visible .vd-card            { opacity:1; transform:none; }
+    body:not(.export-mode) #s11.visible .vd-card:nth-child(1){ transition-delay:.06s; }
+    body:not(.export-mode) #s11.visible .vd-card:nth-child(2){ transition-delay:.16s; }
+    body:not(.export-mode) #s11.visible .vd-card:nth-child(3){ transition-delay:.26s; }
+    body:not(.export-mode) #s11.visible .vd-card:hover {
+      transform:translateY(-6px);
+      box-shadow:0 30px 68px rgba(25,22,89,.16),
+                 0 4px 16px rgba(25,22,89,.08);
+    }
+    /* Phone mockups — fan in from sides + tilt */
+    body:not(.export-mode) .vd-phone.is-reel {
+      transform:translateX(-32px) translateY(26px) rotate(-4deg);
+    }
+    body:not(.export-mode) .vd-phone.is-tiktok {
+      transform:translateX(32px) translateY(26px) rotate(4deg);
+    }
+    body:not(.export-mode) .slide.visible .vd-card .vd-phone.is-reel,
+    body:not(.export-mode) .slide.visible .vd-card .vd-phone.is-tiktok {
+      opacity:1; transform:none;
+    }
+
+    /* ── 7. SWOT center — breathe pulse ── */
+    @keyframes prs-breathe {
+      0%,100% { box-shadow:0 20px 60px rgba(25,22,89,.28),
+                            0 0 0 0 rgba(50,210,180,.22); }
+      50%     { box-shadow:0 28px 80px rgba(25,22,89,.36),
+                            0 0 0 22px rgba(50,210,180,0); }
+    }
+    body:not(.export-mode) #s15.visible .sw-center {
+      animation:prs-breathe 3.4s ease-in-out infinite .7s;
+    }
+
+    /* ── 8. SWOT nodes — hover scale ── */
+    body:not(.export-mode) .sw-node {
+      transition:transform .3s cubic-bezier(0.16,1,0.3,1),
+                 box-shadow .3s ease;
+    }
+    body:not(.export-mode) .sw-node:hover {
+      transform:scale(1.06) !important;
+      box-shadow:0 28px 64px rgba(25,22,89,.18) !important;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Inline edit hotzone -->
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle">Edit</button>
+
+<!-- ================================================
+     DECK
+     ================================================ -->
+<div class="deck-viewport">
+  <main class="deck-stage" id="deckStage">
+
+    <!-- ============================================
+         1 / COVER — Shape Landing Hero
+         ============================================ -->
+    <section class="slide active" id="s1">
+      <!-- Floating background shapes — abstract geometry only -->
+      <div class="s1-warm"></div>
+      <div class="s1-mint"></div>
+      <div class="s1-blue"></div>
+      <div class="s1-ring"></div>
+      <div class="s1-ring2"></div>
+      <div class="s1-ring3"></div>
+      <div class="s1-dots"></div>
+      <div class="s1-dot1"></div>
+      <div class="s1-dot2"></div>
+      <div class="s1-sq"></div>
+      <div class="s1-hline"></div>
+
+      <!-- UpBean logo: top-left -->
+      <div class="cv-logo-l">
+        <img src="assets/logos/upbean.png" alt="UpBean" class="logo-upbean"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div style="display:none;font-size:18px;font-weight:700;color:var(--navy-50)">UpBean</div>
+      </div>
+
+      <!-- BU logo: bottom-right -->
+      <div class="cv-logo-r">
+        <img src="assets/logos/bangkok-university.png" alt="มหาวิทยาลัยกรุงเทพ" class="logo-upbean"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div style="display:none;font-size:18px;font-weight:600;color:var(--navy-50)">มหาวิทยาลัยกรุงเทพ</div>
+      </div>
+
+      <!-- Center hero content -->
+      <div class="cv-center stagger">
+        <div class="cv-badge reveal">
+          <div class="cv-badge-dot"></div>
+          รายงานผลการปฏิบัติงานสหกิจศึกษา
+        </div>
+        <h1 class="cv-h1 reveal">Content Creator</h1>
+        <div class="cv-h1b reveal">at Upbean</div>
+        <div class="cv-sub reveal">
+          Admission Premium
+          <span class="cv-sep">·</span>
+          มกราคม – พฤษภาคม 2569
+        </div>
+        <div class="cv-cards-wrap">
+          <div class="cv-card reveal">
+            <div class="cv-ci">
+              <div class="cv-ci-lbl">ผู้จัดทำ</div>
+              <div class="cv-ci-val">วุฒิภัทร ประไพ</div>
+            </div>
+            <div class="cv-ci">
+              <div class="cv-ci-lbl">รหัสนักศึกษา</div>
+              <div class="cv-ci-val">1650702333</div>
+            </div>
+            <div class="cv-ci">
+              <div class="cv-ci-lbl">สถาบัน</div>
+              <div class="cv-ci-val">มหาวิทยาลัยกรุงเทพ</div>
+            </div>
+          </div>
+
+          <!-- Secondary card: education details -->
+          <div class="cv-card2 reveal" style="transition-delay:.32s">
+            <div class="cv-card2-lbl">ข้อมูลการศึกษา</div>
+            <div class="cv-card2-line">
+              คณะเทคโนโลยีสารสนเทศและนวัตกรรม<br>
+              ภาคการศึกษาที่ 2/2568<br>
+              อาจารย์ที่ปรึกษา: อ.ศิริญญ์รดา เอกอัครรุ่งโรจน์
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         2 / COMPANY OVERVIEW — Infinite Grid
+         ============================================ -->
+    <section class="slide" id="s2">
+      <div class="co-grid">
+
+        <!-- LEFT — brand identity + description -->
+        <div class="co-left stagger">
+
+          <!-- Brand lockup: UpBean + divider + Admission Premium -->
+          <div class="co-lockup reveal">
+            <img src="assets/logos/upbean.png" alt="UpBean" class="logo-upbean"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <div style="display:none;font-size:20px;font-weight:700;color:var(--navy-50)">UpBean</div>
+            <div class="co-lockup-div"></div>
+            <img src="assets/logos/admission-premium.png" alt="Admission Premium"
+                 style="height:110px;width:auto;object-fit:contain;display:block;opacity:.82"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <div style="display:none;font-size:17px;font-weight:600;color:var(--mint-dk)">Admission Premium</div>
+          </div>
+
+          <div class="s-label reveal">เกี่ยวกับองค์กร</div>
+          <h2 class="co-name reveal">บริษัท อัพบีน จำกัด</h2>
+          <div class="co-brand reveal">Admission Premium</div>
+          <p class="co-desc reveal">
+            แพลตฟอร์มข้อมูลการศึกษาต่อในระดับอุดมศึกษา
+            มุ่งสร้างคอนเทนต์คุณภาพสูงเกี่ยวกับคณะ สาขาวิชา
+            และแนวทางการเรียนต่อ เพื่อช่วยนักเรียนมัธยมปลาย
+            ตัดสินใจเลือกเรียนได้อย่างมั่นใจ
+          </p>
+        </div>
+
+        <!-- RIGHT — 3 glass info cards floating over grid -->
+        <div class="co-right stagger">
+          <div class="co-card reveal">
+            <div class="co-lbl">ประเภทธุรกิจ</div>
+            <div class="co-val">Education Content Platform</div>
+            <div class="co-sub">สื่อการศึกษาออนไลน์</div>
+          </div>
+          <div class="co-card reveal">
+            <div class="co-lbl">ช่องทางหลัก</div>
+            <div class="co-val">Facebook · TikTok · Website</div>
+            <div class="co-sub">admissionpremium.com</div>
+          </div>
+          <div class="co-card reveal">
+            <div class="co-lbl">กลุ่มเป้าหมาย</div>
+            <div class="co-val">นักเรียนมัธยมปลาย</div>
+            <div class="co-sub">ผู้วางแผนเข้ามหาวิทยาลัย</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         3 / ROLE MAP — Bounce Card Style
+         ============================================ -->
+    <section class="slide" id="s3">
+
+      <!-- Header -->
+      <div class="rm-top stagger">
+        <div class="s-label reveal">ตำแหน่งและบทบาท</div>
+        <div class="rm-title reveal">Content Creator</div>
+        <div class="rm-sub reveal">Admission Premium · บริษัท อัพบีน จำกัด</div>
+        <div class="rm-badge reveal">
+          <div class="rm-badge-dot"></div>
+          มกราคม – พฤษภาคม 2569
+        </div>
+      </div>
+
+      <!-- Bounce cards — 4 roles, each with unique tilt via CSS vars -->
+      <div class="bc-row">
+
+        <div class="bc-card">
+          <div class="bc-num">01</div>
+          <div class="bc-label">Research</div>
+          <div class="bc-name">ค้นคว้าข้อมูล</div>
+          <div class="bc-desc">ค้นคว้าข้อมูลคณะ สาขา อาชีพ และเทรนด์การศึกษา</div>
+        </div>
+
+        <div class="bc-card">
+          <div class="bc-num">02</div>
+          <div class="bc-label">Writing</div>
+          <div class="bc-name">เขียนบทความ</div>
+          <div class="bc-desc">เขียนบทความและเรียบเรียงข้อมูลให้อ่านง่าย</div>
+        </div>
+
+        <div class="bc-card">
+          <div class="bc-num">03</div>
+          <div class="bc-label">Adaptation</div>
+          <div class="bc-name">ย่อยหลายแพลตฟอร์ม</div>
+          <div class="bc-desc">ย่อยบทความเป็น Facebook Infographic และ Short-form</div>
+        </div>
+
+        <div class="bc-card">
+          <div class="bc-num">04</div>
+          <div class="bc-label">Visual Support</div>
+          <div class="bc-name">สนับสนุน Visual</div>
+          <div class="bc-desc">สนับสนุนภาพประกอบและ visual direction</div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         4 / CONTENT OUTPUTS — Bounce Card Style
+         ============================================ -->
+    <section class="slide" id="s4">
+
+      <!-- Header — same structure as Slide 3 -->
+      <div class="rm-top stagger">
+        <div class="s-label reveal">ผลงาน</div>
+        <div class="rm-title reveal">Content Outputs</div>
+        <div class="rm-sub reveal">ประเภทผลงานหลักที่ได้ผลิตระหว่างฝึกงาน</div>
+      </div>
+
+      <!-- Bounce cards — 4 output types with counts -->
+      <div class="bc-row">
+
+        <div class="bc-card">
+          <div class="bc-num">01</div>
+          <div class="bc-label">Articles</div>
+          <div class="bc-name">บทความแนะแนว<br>คณะ สาขา และอาชีพ</div>
+        </div>
+
+        <div class="bc-card">
+          <div class="bc-num">02</div>
+          <div class="bc-label">Facebook Infographic</div>
+          <div class="bc-name">ย่อยบทความเป็น<br>โพสต์อ่านง่าย</div>
+        </div>
+
+        <div class="bc-card">
+          <div class="bc-num">03</div>
+          <div class="bc-label">Short-form Video</div>
+          <div class="bc-name">วิดีโอสั้นสำหรับ<br>Reels และ TikTok</div>
+        </div>
+
+        <div class="bc-card">
+          <div class="bc-num">04</div>
+          <div class="bc-label">Article Graphics</div>
+          <div class="bc-name">ภาพประกอบและ<br>Visual Direction</div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         5 / SECTION DIVIDER — Premium
+         ============================================ -->
+    <section class="slide" id="s5">
+
+      <!-- Left vertical accent bar -->
+      <div class="sd5-bar"></div>
+
+      <!-- Right decorative layers -->
+      <div class="sd5-blob"></div>
+      <div class="sd5-ring1"></div>
+      <div class="sd5-ring2"></div>
+      <div class="sd5-bignum">01</div>
+
+      <!-- Left content -->
+      <div class="sd5-inner stagger">
+        <div class="s-label reveal">Section 01</div>
+        <div class="sd5-line reveal"></div>
+        <h2 class="sd5-title reveal">ผลการ<br>ปฏิบัติงาน</h2>
+        <div class="sd5-sub reveal">สรุปตัวเลขผลงานและกระบวนการทำงาน</div>
+      </div>
+
+    </section>
+
+
+    <!-- ============================================
+         6 / HERO STATS — Dynamic Asymmetric
+         ============================================ -->
+    <section class="slide" id="s6">
+
+      <!-- Background decoration -->
+      <div class="hs-glow"></div>
+
+      <!-- Header -->
+      <div class="on-head stagger">
+        <div class="s-label reveal">ผลลัพธ์รวม</div>
+        <div class="s-title reveal" style="margin-bottom:0">ตัวเลขที่ภาคภูมิใจ</div>
+      </div>
+
+      <!-- Vertical separator -->
+      <div class="hs-sep"></div>
+
+      <!-- Hero stat — left -->
+      <div class="hs-hero stagger">
+        <div class="hs-hero-lbl reveal">Video Views</div>
+        <div class="hs-hero-num reveal">704K<span class="sf">+</span></div>
+        <div class="hs-hero-sub reveal">รวม Facebook Reels + TikTok</div>
+        <div class="hs-hero-rule reveal"></div>
+      </div>
+
+      <!-- Secondary stats — right 2×2 -->
+      <div class="hs-stats stagger">
+
+        <div class="hs-stat reveal-scale">
+          <div class="hs-stat-lbl">Articles</div>
+          <div class="hs-stat-val">24</div>
+          <div class="hs-stat-sub">บทความแนะแนวทั้งหมด</div>
+        </div>
+
+        <div class="hs-stat reveal-scale" style="transition-delay:.10s">
+          <div class="hs-stat-lbl">Graphics</div>
+          <div class="hs-stat-val">101<span class="m">+</span></div>
+          <div class="hs-stat-sub">ภาพประกอบและ visual assets</div>
+        </div>
+
+        <div class="hs-stat reveal-scale" style="transition-delay:.20s">
+          <div class="hs-stat-lbl">Short-form Videos</div>
+          <div class="hs-stat-val">11</div>
+          <div class="hs-stat-sub">Facebook Reels + TikTok</div>
+        </div>
+
+        <div class="hs-stat reveal-scale" style="transition-delay:.30s">
+          <div class="hs-stat-lbl">Facebook Posts</div>
+          <div class="hs-stat-val">7</div>
+          <div class="hs-stat-sub">Facebook Infographic</div>
+        </div>
+
+      </div>
+
+      <!-- Bottom note -->
+      <div class="hs-note">รวมผลงานจากบทความ วิดีโอ โพสต์ และกราฟิก</div>
+
+    </section>
+
+
+    <!-- ============================================
+         7 / WORKFLOW
+         ============================================ -->
+    <section class="slide" id="s7">
+      <div class="wj-glow"></div>
+      <div class="wj-head stagger">
+        <div class="s-label reveal">กระบวนการทำงาน</div>
+        <div class="wj-title reveal">Workflow Journey</div>
+        <div class="wj-sub reveal">กระบวนการทำงานตั้งแต่รับโจทย์จนถึงเผยแพร่จริง</div>
+      </div>
+      <svg class="wj-rail-svg" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path class="wj-rail"
+              d="M 160,532 L 272,532 C 444,532 444,544 616,544 C 788,544 788,524 960,524 C 1132,524 1132,542 1304,542 C 1476,542 1476,532 1648,532 L 1760,532"/>
+      </svg>
+      <div class="wj-steps">
+        <div class="wj-step">
+          <div class="wj-circle">
+            <div class="wj-circle-num">01</div>
+            <div class="wj-circle-name">รับโจทย์</div>
+          </div>
+          <div class="wj-step-desc">ทำความเข้าใจเป้าหมายคอนเทนต์</div>
+        </div>
+        <div class="wj-step" style="top:12px">
+          <div class="wj-circle">
+            <div class="wj-circle-num">02</div>
+            <div class="wj-circle-name">ค้นคว้าข้อมูล</div>
+          </div>
+          <div class="wj-step-desc">ตรวจสอบข้อมูลจากแหล่งที่เชื่อถือได้</div>
+        </div>
+        <div class="wj-step" style="top:-8px">
+          <div class="wj-circle">
+            <div class="wj-circle-num">03</div>
+            <div class="wj-circle-name">วางโครงเนื้อหา</div>
+          </div>
+          <div class="wj-step-desc">จัดลำดับประเด็นให้อ่านง่าย</div>
+        </div>
+        <div class="wj-step" style="top:10px">
+          <div class="wj-circle">
+            <div class="wj-circle-num">04</div>
+            <div class="wj-circle-name">ผลิตคอนเทนต์</div>
+          </div>
+          <div class="wj-step-desc">เขียน ออกแบบ หรือเตรียมสื่อ</div>
+        </div>
+        <div class="wj-step">
+          <div class="wj-circle">
+            <div class="wj-circle-num">05</div>
+            <div class="wj-circle-name">ตรวจทานและเผยแพร่</div>
+          </div>
+          <div class="wj-step-desc">ตรวจความถูกต้องก่อนนำไปใช้จริง</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         8 / SECTION DIVIDER — ผลงานที่ได้ปฏิบัติ
+         ============================================ -->
+    <section class="slide" id="s8">
+
+      <!-- Left vertical accent bar -->
+      <div class="sd5-bar"></div>
+
+      <!-- Right decorative layers -->
+      <div class="sd5-blob"></div>
+      <div class="sd5-ring1"></div>
+      <div class="sd5-ring2"></div>
+      <div class="sd5-bignum">02</div>
+
+      <!-- Left content -->
+      <div class="sd5-inner stagger">
+        <div class="s-label reveal">Section 02</div>
+        <div class="sd5-line reveal"></div>
+        <h2 class="sd5-title reveal">ผลงานที่<br>ได้ปฏิบัติ</h2>
+        <div class="sd5-sub reveal">ตัวอย่างผลงานจริงในแต่ละประเภทคอนเทนต์</div>
+      </div>
+
+    </section>
+
+
+    <!-- ============================================
+         9 / ARTICLE WORK
+         ============================================ -->
+    <section class="slide" id="s9">
+      <div class="aw-grid">
+        <div class="aw-left">
+          <div class="s-label reveal">บทความ</div>
+          <div style="font-size:56px;font-weight:800;color:var(--navy);line-height:1.05;margin-bottom:18px" class="reveal">Article Work</div>
+          <p style="font-size:20px;font-weight:300;color:var(--navy-50);line-height:1.65" class="reveal">
+            เขียนบทความเชิงสาระเกี่ยวกับคณะและสาขาวิชา<br>
+            อ้างอิงข้อมูลจากหลักสูตรมหาวิทยาลัยจริง
+          </p>
+          <div class="aw-stats stagger">
+            <div class="aw-stat reveal-scale">
+              <div class="aw-sv">24</div>
+              <div class="aw-sl">บทความทั้งหมด</div>
+            </div>
+            <div class="aw-stat reveal-scale" style="transition-delay:.1s">
+              <div class="aw-sv m">8</div>
+              <div class="aw-sl">เผยแพร่แล้ว</div>
+            </div>
+            <div class="aw-stat reveal-scale" style="transition-delay:.2s">
+              <div class="aw-sv">16</div>
+              <div class="aw-sl">รอเผยแพร่</div>
+            </div>
+            <div class="aw-stat reveal-scale" style="transition-delay:.3s">
+              <div class="aw-sv m">4,266</div>
+              <div class="aw-sl">Total Views</div>
+            </div>
+          </div>
+        </div>
+        <div class="aw-right">
+          <div class="aw-mockup-wrap reveal">
+            <!-- Main browser mockup — large, prominent -->
+            <div class="aw-main-img">
+              <img src="assets/articles/article-website.png" alt="Screenshot บทความบน admissionpremium.com"
+                   onerror="this.style.display='none'">
+            </div>
+            <!-- Secondary preview — smaller, overlapping lower-left -->
+            <div class="aw-sec-img" style="transition-delay:.18s">
+              <img src="assets/articles/article-website2.png" alt="Screenshot website บทความ 2"
+                   onerror="this.style.display='none'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         10 / FACEBOOK INFOGRAPHIC POST
+         ============================================ -->
+    <section class="slide" id="s10">
+      <div class="fb-grid-outer">
+        <div class="fb-left stagger">
+          <div class="s-label reveal">Facebook</div>
+          <div class="reveal" style="margin-bottom:12px">
+            <img src="assets/logos/admission-premium.png" alt="Admission Premium" class="logo-ap"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <div style="display:none;font-size:15px;font-weight:500;color:var(--mint-dk)">Admission Premium</div>
+          </div>
+          <div class="fb-big reveal">7</div>
+          <div style="font-size:38px;font-weight:800;color:var(--navy);margin-top:4px;line-height:1.2" class="reveal">Infographic<br>Posts</div>
+          <p style="font-size:22px;font-weight:300;color:var(--navy-50);margin-top:20px;line-height:1.7" class="reveal">
+            นำบทความมาย่อยเป็น Facebook Infographic Post
+            เพื่อสรุปประเด็นสำคัญให้อ่านง่าย
+            และแนบลิงก์บทความเต็มไว้ในคอมเมนต์
+          </p>
+        </div>
+        <div class="fb-right stagger">
+          <div class="s-label reveal">ตัวอย่างผลงาน</div>
+          <div class="fb-cards reveal">
+            <div class="fb-card">
+              <img src="assets/facebook-posts/fb-post-01.png" alt="Infographic Post 1" class="ph-asset"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="ph-lbl" style="display:none">[ใส่ screenshot<br>Infographic 1]</div>
+            </div>
+            <div class="fb-card">
+              <img src="assets/facebook-posts/fb-post-02.png" alt="Infographic Post 2" class="ph-asset"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="ph-lbl" style="display:none">[ใส่ screenshot<br>Infographic 2]</div>
+            </div>
+            <div class="fb-card">
+              <img src="assets/facebook-posts/fb-post-03.png" alt="Infographic Post 3" class="ph-asset"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="ph-lbl" style="display:none">[ใส่ screenshot<br>Infographic 3]</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         11 / VIDEO / SHORT-FORM
+         ============================================ -->
+    <section class="slide" id="s11">
+      <div class="vd-top stagger">
+        <div class="vd-total">
+          <div class="s-label reveal">วิดีโอ / Short-form</div>
+          <div class="vd-bignum reveal"><span class="m">704,992</span>+</div>
+          <div class="vd-ttl reveal" style="transition-delay:.15s">Total Video Views</div>
+        </div>
+        <div class="vd-tags reveal" style="transition-delay:.2s">
+          <div class="vd-tag t-fb">FB Reels 343,000+</div>
+          <div class="vd-tag t-tt">TikTok 361,992+</div>
+          <div class="vd-tag" style="background:var(--white);color:var(--navy);border-color:var(--navy-06)">11 Videos Published</div>
+        </div>
+      </div>
+      <div class="vd-cards stagger">
+        <div class="vd-card reveal-scale">
+          <div class="vd-head">
+            <div class="vd-rank">1</div>
+            <div class="vd-name">สายสุขภาพที่ไม่ใช่หมอ</div>
+          </div>
+          <div class="vd-phone-pair">
+            <div class="vd-phone is-reel">
+              <div class="vd-notch"></div>
+              <div class="vd-screen">
+                <img src="assets/videos/reel-01.png" alt="Facebook Reel สายสุขภาพที่ไม่ใช่หมอ" class="vd-shot"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="vd-ph">ใส่ภาพ<br>reel-01.png</div>
+                <div class="vd-platform fb">Reel</div>
+              </div>
+            </div>
+            <div class="vd-phone is-tiktok">
+              <div class="vd-notch"></div>
+              <div class="vd-screen">
+                <img src="assets/videos/tiktok-01.png" alt="TikTok สายสุขภาพที่ไม่ใช่หมอ" class="vd-shot"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="vd-ph">ใส่ภาพ<br>tiktok-01.png</div>
+                <div class="vd-platform tt">TikTok</div>
+              </div>
+            </div>
+          </div>
+          <div class="vd-views">
+            <div class="vd-view"><b>180,000+</b><span>Reel</span></div>
+            <div class="vd-view"><b>114,500+</b><span>TikTok</span></div>
+            <div class="vd-view total"><b>294,500+</b><span>Total</span></div>
+          </div>
+        </div>
+        <div class="vd-card reveal-scale" style="transition-delay:.1s">
+          <div class="vd-head">
+            <div class="vd-rank">2</div>
+            <div class="vd-name">วิทย์กีฬา</div>
+          </div>
+          <div class="vd-phone-pair">
+            <div class="vd-phone is-reel">
+              <div class="vd-notch"></div>
+              <div class="vd-screen">
+                <img src="assets/videos/reel-02.png" alt="Facebook Reel วิทย์กีฬา" class="vd-shot"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="vd-ph">ใส่ภาพ<br>reel-02.png</div>
+                <div class="vd-platform fb">Reel</div>
+              </div>
+            </div>
+            <div class="vd-phone is-tiktok">
+              <div class="vd-notch"></div>
+              <div class="vd-screen">
+                <img src="assets/videos/tiktok-02.png" alt="TikTok วิทย์กีฬา" class="vd-shot"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="vd-ph">ใส่ภาพ<br>tiktok-02.png</div>
+                <div class="vd-platform tt">TikTok</div>
+              </div>
+            </div>
+          </div>
+          <div class="vd-views">
+            <div class="vd-view"><b>24,000+</b><span>Reel</span></div>
+            <div class="vd-view"><b>167,900+</b><span>TikTok</span></div>
+            <div class="vd-view total"><b>191,900+</b><span>Total</span></div>
+          </div>
+        </div>
+        <div class="vd-card reveal-scale" style="transition-delay:.2s">
+          <div class="vd-head">
+            <div class="vd-rank">3</div>
+            <div class="vd-name">จิตวิทยา</div>
+          </div>
+          <div class="vd-phone-pair">
+            <div class="vd-phone is-reel">
+              <div class="vd-notch"></div>
+              <div class="vd-screen">
+                <img src="assets/videos/reel-03.png" alt="Facebook Reel จิตวิทยา" class="vd-shot"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="vd-ph">ใส่ภาพ<br>reel-03.png</div>
+                <div class="vd-platform fb">Reel</div>
+              </div>
+            </div>
+            <div class="vd-phone is-tiktok">
+              <div class="vd-notch"></div>
+              <div class="vd-screen">
+                <img src="assets/videos/tiktok-03.png" alt="TikTok จิตวิทยา" class="vd-shot"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="vd-ph">ใส่ภาพ<br>tiktok-03.png</div>
+                <div class="vd-platform tt">TikTok</div>
+              </div>
+            </div>
+          </div>
+          <div class="vd-views">
+            <div class="vd-view"><b>49,000+</b><span>Reel</span></div>
+            <div class="vd-view"><b>53,900+</b><span>TikTok</span></div>
+            <div class="vd-view total"><b>102,900+</b><span>Total</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         12 / GRAPHIC / VISUAL DIRECTION
+         ============================================ -->
+    <section class="slide" id="s12">
+      <div class="gr-grid">
+        <div class="gr-left stagger">
+          <div class="s-label reveal">กราฟิก</div>
+          <div class="gr-big reveal">101<span class="m">+</span></div>
+          <div style="font-size:36px;font-weight:800;color:var(--navy);margin-top:6px;line-height:1.2" class="reveal">Graphics<br>for Articles</div>
+          <p style="font-size:21px;font-weight:300;color:var(--navy-50);margin-top:20px;line-height:1.65" class="reveal">
+            ภาพประกอบบทความ<br>visual direction<br>และ asset ทุก platform
+          </p>
+        </div>
+        <div class="gr-right">
+          <div class="gr-showcase">
+            <!-- Hero — main large image, spans all 3 rows -->
+            <div class="gr-ph gr-main reveal-scale">
+              <img src="assets/graphics/graphic-01.jpg" alt="Graphic 1" class="ph-asset"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="ph-lbl" style="display:none">[ใส่กราฟิกหลัก]</div>
+            </div>
+            <!-- Side card 1 -->
+            <div class="gr-ph reveal-scale" style="transition-delay:.12s">
+              <img src="assets/graphics/graphic-02.jpg" alt="Graphic 2" class="ph-asset"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="ph-lbl" style="display:none">[กราฟิก 2]</div>
+            </div>
+            <!-- Side card 2 -->
+            <div class="gr-ph reveal-scale" style="transition-delay:.22s">
+              <img src="assets/graphics/graphic-03.jpg" alt="Graphic 3" class="ph-asset"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="ph-lbl" style="display:none">[กราฟิก 3]</div>
+            </div>
+            <!-- Side card 3 -->
+            <div class="gr-ph reveal-scale" style="transition-delay:.32s">
+              <img src="assets/graphics/graphic-04.png" alt="Graphic 4" class="ph-asset"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="ph-lbl" style="display:none">[กราฟิก 4]</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         13 / ARTICLE VISUAL OVERVIEW
+         ============================================ -->
+    <section class="slide" id="s13">
+      <div class="pw-head stagger">
+        <div class="s-label reveal">ผลงาน</div>
+        <div class="pw-title reveal">ภาพรวมผลงาน</div>
+        <div class="pw-subtitle reveal" style="transition-delay:.14s">
+          รวมตัวอย่างภาพประกอบบทความที่ผลิตระหว่างฝึกงาน
+        </div>
+      </div>
+      <div class="pw-wall stagger">
+        <!-- ── Top section (rows 1–3): Cover · Wide · Cover ── -->
+        <div class="pw-item pw-cover reveal-scale" style="transition-delay:.04s">
+          <img src="assets/portfolio-wall/cover-01.png" alt="ปกบทความ 1" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">cover-01.png</div>
+        </div>
+        <div class="pw-item pw-wide reveal-scale" style="transition-delay:.08s">
+
+          <img src="assets/portfolio-wall/wide-01.png" alt="ภาพประกอบบทความ 1" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">wide-01.png</div>
+        </div>
+        <div class="pw-item pw-cover reveal-scale" style="transition-delay:.12s">
+
+          <img src="assets/portfolio-wall/cover-02.png" alt="ปกบทความ 2" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">cover-02.png</div>
+        </div>
+        <!-- Dense fills gap at col 5-8, row 3 -->
+        <div class="pw-item pw-banner reveal-scale" style="transition-delay:.16s">
+
+          <img src="assets/portfolio-wall/banner-01.png" alt="banner 1" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">banner-01.png</div>
+        </div>
+        <!-- ── Middle section (rows 4–5): three wides ── -->
+        <div class="pw-item pw-wide reveal-scale" style="transition-delay:.20s">
+
+          <img src="assets/portfolio-wall/wide-02.png" alt="ภาพประกอบบทความ 2" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">wide-02.png</div>
+        </div>
+        <div class="pw-item pw-wide reveal-scale" style="transition-delay:.24s">
+
+          <img src="assets/portfolio-wall/visual-01.png" alt="ภาพประกอบบทความ 3" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">visual-01.png</div>
+        </div>
+        <div class="pw-item pw-wide reveal-scale" style="transition-delay:.28s">
+
+          <img src="assets/portfolio-wall/wide-03.png" alt="ภาพประกอบบทความ 4" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">wide-03.png</div>
+        </div>
+        <!-- ── Bottom strip (row 6): three banners ── -->
+        <div class="pw-item pw-banner reveal-scale" style="transition-delay:.32s">
+
+          <img src="assets/portfolio-wall/banner-02.png" alt="banner 2" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">banner-02.png</div>
+        </div>
+        <div class="pw-item pw-banner reveal-scale" style="transition-delay:.36s">
+
+          <img src="assets/portfolio-wall/banner-03.png" alt="banner 3" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">banner-03.png</div>
+        </div>
+        <div class="pw-item pw-banner reveal-scale" style="transition-delay:.40s">
+
+          <img src="assets/portfolio-wall/banner-04.png" alt="banner 4" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">banner-04.png</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         14 / ARTICLE VISUAL OVERVIEW CONTINUED
+         ============================================ -->
+    <section class="slide" id="s14">
+      <div class="pw-head stagger">
+        <div class="s-label reveal">ผลงาน</div>
+        <div class="pw-title reveal">ภาพรวมผลงาน (ต่อ)</div>
+        <div class="pw-subtitle reveal" style="transition-delay:.14s">
+          ตัวอย่างผลงานเพิ่มเติมจากภาพประกอบบทความในหลายรูปแบบ
+        </div>
+      </div>
+      <div class="pw-wall stagger">
+        <!-- ── Top section (rows 1–3): Cover · Wide · Cover ── -->
+        <div class="pw-item pw-cover reveal-scale" style="transition-delay:.04s">
+
+          <img src="assets/portfolio-wall/cover-03.png" alt="ปกบทความ 3" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">cover-03.png</div>
+        </div>
+        <div class="pw-item pw-wide reveal-scale" style="transition-delay:.08s">
+
+          <img src="assets/portfolio-wall/wide-04.png" alt="ภาพประกอบบทความ 5" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">wide-04.png</div>
+        </div>
+        <div class="pw-item pw-cover reveal-scale" style="transition-delay:.12s">
+
+          <img src="assets/portfolio-wall/cover-04.png" alt="ปกบทความ 4" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">cover-04.png</div>
+        </div>
+        <!-- Dense fills gap at col 5-8, row 3 -->
+        <div class="pw-item pw-banner reveal-scale" style="transition-delay:.16s">
+
+          <img src="assets/portfolio-wall/banner-05.png" alt="banner 5" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">banner-05.png</div>
+        </div>
+        <!-- ── Middle section (rows 4–5): three wides ── -->
+        <div class="pw-item pw-wide reveal-scale" style="transition-delay:.20s">
+
+          <img src="assets/portfolio-wall/wide-05.png" alt="ภาพประกอบบทความ 6" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">wide-05.png</div>
+        </div>
+        <div class="pw-item pw-wide reveal-scale" style="transition-delay:.24s">
+
+          <img src="assets/portfolio-wall/visual-02.png" alt="ภาพประกอบบทความ 7" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">visual-02.png</div>
+        </div>
+        <div class="pw-item pw-wide reveal-scale" style="transition-delay:.28s">
+
+          <img src="assets/portfolio-wall/wide-06.png" alt="ภาพประกอบบทความ 8" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">wide-06.png</div>
+        </div>
+        <!-- ── Bottom strip (row 6): banner + two visual crops ── -->
+        <div class="pw-item pw-banner reveal-scale" style="transition-delay:.32s">
+
+          <img src="assets/portfolio-wall/banner-06.png" alt="banner 6" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">banner-06.png</div>
+        </div>
+        <div class="pw-item pw-banner reveal-scale" style="transition-delay:.36s">
+
+          <img src="assets/portfolio-wall/visual-03.png" alt="ภาพประกอบบทความ 9" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">visual-03.png</div>
+        </div>
+        <div class="pw-item pw-banner reveal-scale" style="transition-delay:.40s">
+
+          <img src="assets/portfolio-wall/visual-04.png" alt="ภาพประกอบบทความ 10" class="ph-asset"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-lbl">visual-04.png</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         15 / SWOT ANALYSIS
+         ============================================ -->
+    <section class="slide" id="s15">
+
+      <!-- SVG connector lines drawn behind the circles -->
+      <svg class="sw-svg" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Center (960,590) → S oval center (320,400) -->
+        <line class="sw-line" x1="826" y1="550" x2="475" y2="446"/>
+        <!-- Center → W oval center (1600,400) -->
+        <line class="sw-line" x1="1094" y1="550" x2="1445" y2="446"/>
+        <!-- Center → O oval center (320,830) -->
+        <line class="sw-line" x1="829" y1="639" x2="472" y2="773"/>
+        <!-- Center → T oval center (1600,830) -->
+        <line class="sw-line" x1="1091" y1="639" x2="1448" y2="773"/>
+      </svg>
+
+      <!-- Header -->
+      <div class="sw-head stagger">
+        <div class="s-label reveal">การวิเคราะห์ตนเอง</div>
+        <div class="sw-title reveal">SWOT Analysis</div>
+        <div class="sw-sub reveal" style="transition-delay:.10s">การวิเคราะห์จากประสบการณ์ปฏิบัติงานในตำแหน่ง Content Creator</div>
+      </div>
+
+      <!-- Center circle — dark navy -->
+      <div class="sw-center">
+        <div class="sw-c-label">Analysis</div>
+        <div class="sw-c-title">SWOT</div>
+      </div>
+
+      <!-- S — Strengths (upper-left) -->
+      <div class="sw-node sw-s">
+        <div class="sw-letter">S</div>
+        <div class="sw-name">Strengths</div>
+        <div class="sw-sep"></div>
+        <ul class="sw-ul">
+          <li>ผลิตคอนเทนต์ได้หลายรูปแบบ</li>
+          <li>ค้นคว้าและย่อยข้อมูลให้อ่านง่าย</li>
+          <li>ผลงานมีตัวเลขวัดผลชัดเจน</li>
+        </ul>
+      </div>
+
+      <!-- W — Weaknesses (upper-right) -->
+      <div class="sw-node sw-w">
+        <div class="sw-letter">W</div>
+        <div class="sw-name">Weaknesses</div>
+        <div class="sw-sep"></div>
+        <ul class="sw-ul">
+          <li>ช่วงแรกใช้เวลาตรวจสอบข้อมูลมาก</li>
+          <li>ต้องปรับภาษาให้เหมาะกับกลุ่มเป้าหมาย</li>
+          <li>ต้องทำงานให้เสร็จตามเวลาที่กำหนด</li>
+        </ul>
+      </div>
+
+      <!-- O — Opportunities (lower-left) -->
+      <div class="sw-node sw-o">
+        <div class="sw-letter">O</div>
+        <div class="sw-name">Opportunities</div>
+        <div class="sw-sep"></div>
+        <ul class="sw-ul">
+          <li>คอนเทนต์แนะแนวการศึกษายังมีความต้องการสูง</li>
+          <li>Short-form video ช่วยขยายการเข้าถึง</li>
+          <li>AI และเครื่องมือดิจิทัลช่วยเพิ่มประสิทธิภาพ</li>
+        </ul>
+      </div>
+
+      <!-- T — Threats (lower-right) -->
+      <div class="sw-node sw-t">
+        <div class="sw-letter">T</div>
+        <div class="sw-name">Threats</div>
+        <div class="sw-sep"></div>
+        <ul class="sw-ul">
+          <li>ข้อมูลหลักสูตรและ TCAS เปลี่ยนทุกปี</li>
+          <li>Algorithm แพลตฟอร์มส่งผลต่อยอดเข้าถึง</li>
+          <li>คอนเทนต์การศึกษาแข่งขันสูง</li>
+        </ul>
+      </div>
+
+    </section>
+
+
+    <!-- ============================================
+         16 / PROBLEMS + LEARNING + THANK YOU
+         ============================================ -->
+    <section class="slide" id="s16">
+
+      <!-- ── Top: 2 cards ── -->
+      <div class="cl-cards">
+
+        <!-- Left card: ปัญหาที่พบ -->
+        <div class="cl-card reveal">
+          <div class="cl-head">Challenge</div>
+          <div class="cl-card-title">ปัญหาที่พบ</div>
+          <ul class="cl-ul">
+            <li>การปรับตัวกับหัวข้อที่หลากหลายและกลุ่มเป้าหมายที่ต่างกัน</li>
+            <li>การบริหารเวลาเมื่อต้องผลิตงานหลายชิ้นพร้อมกัน</li>
+            <li>การปรับเนื้อหาให้เหมาะกับแต่ละ platform และรูปแบบคอนเทนต์</li>
+          </ul>
+        </div>
+
+        <!-- Right card: สิ่งที่ได้เรียนรู้ -->
+        <div class="cl-card cl-card-learning reveal" style="transition-delay:.14s">
+          <div class="cl-head">Takeaway</div>
+          <div class="cl-card-title">สิ่งที่ได้เรียนรู้</div>
+          <ul class="cl-ul">
+            <li>ทักษะการค้นคว้าและถ่ายทอดข้อมูลเชิงการศึกษาอย่างถูกต้องและน่าสนใจ</li>
+            <li>กระบวนการผลิตคอนเทนต์ครบวงจร ตั้งแต่ idea จนถึง publish จริง</li>
+            <li>การทำงานร่วมกับทีมอย่างมืออาชีพในสภาพแวดล้อมการทำงานจริง</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- ── Hairline divider ── -->
+      <div class="cl-divider"></div>
+
+      <!-- ── Bottom: Closing section ── -->
+      <div class="cl-closing">
+
+        <!-- Left: Thank you hero -->
+        <div class="cl-thankyou-block stagger">
+          <div class="cl-ty reveal">ขอบคุณ<span class="m">ครับ</span></div>
+          <div class="cl-name reveal" style="transition-delay:.1s">
+            วุฒิภัทร ประไพ · 1650702333<br>
+            บริษัท อัพบีน จำกัด · มหาวิทยาลัยกรุงเทพ
+          </div>
+        </div>
+
+        <!-- Right: Logos + advisor info -->
+        <div class="cl-info stagger">
+
+          <!-- Logos -->
+          <div class="cl-logos reveal" style="transition-delay:.18s">
+            <img src="assets/logos/admission-premium.png" alt="Admission Premium"
+                 style="height:52px;width:auto;object-fit:contain;opacity:.60"
+                 onerror="this.style.display='none'">
+            <img src="assets/logos/bangkok-university.png" alt="มหาวิทยาลัยกรุงเทพ"
+                 style="height:56px;width:auto;object-fit:contain;opacity:.60"
+                 onerror="this.style.display='none'">
+          </div>
+
+          <!-- Supervisor -->
+          <div class="cl-adv-block reveal" style="transition-delay:.24s">
+            <div class="cl-adv-lbl">หัวหน้างาน</div>
+            <div class="cl-adv-name">คุณสิงห์หา ถาหล้า</div>
+          </div>
+
+          <!-- Advisor -->
+          <div class="cl-adv-block reveal" style="transition-delay:.30s">
+            <div class="cl-adv-lbl">อาจารย์ที่ปรึกษา</div>
+            <div class="cl-adv-name">อ.ศิริญญ์รดา เอกอัครรุ่งโรจน์</div>
+          </div>
+
+          <!-- Mentors -->
+          <div class="cl-adv-block reveal" style="transition-delay:.36s">
+            <div class="cl-adv-lbl">พี่เลี้ยง</div>
+            <div class="cl-adv-name">คุณจิณณพัตต์ แย้มโสภี<br>คุณพีรณัฐ นิลดำอ่อน</div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+  </main><!-- /deck-stage -->
+</div><!-- /deck-viewport -->
+
+<!-- Live slide counter hidden -->
+<!-- <div class="pg" id="pg">01 / 16</div> -->
+<nav class="dot-nav" id="dotNav" aria-label="Slide navigation"></nav>
+
+
+<script>
+/* ================================================
+   SLIDE PRESENTATION CONTROLLER
+   Fixed 1920×1080 stage, keyboard + touch + wheel
+   ================================================ */
+class Deck {
+  constructor() {
+    this.slides  = Array.from(document.querySelectorAll('.slide'));
+    this.total   = this.slides.length;
+    this.idx     = 0;
+    this.stage   = document.getElementById('deckStage');
+    this.counter = document.getElementById('pg');
+    this.nav     = document.getElementById('dotNav');
+    this.dots    = [];
+    this._wheelLock = false;
+
+    this._scale();
+    this._nav();
+    this._keyboard();
+    this._touch();
+    this._wheel();
+    this.go(0);
+    window.addEventListener('resize', () => this._scale());
+  }
+
+  /* Scale the whole stage to fit the viewport */
+  _scale() {
+    const f = Math.min(innerWidth / 1920, innerHeight / 1080);
+    const x = (innerWidth  - 1920 * f) / 2;
+    const y = (innerHeight - 1080 * f) / 2;
+    this.stage.style.transform = `translate(${x}px,${y}px) scale(${f})`;
+  }
+
+  /* Right-side dot navigation */
+  _nav() {
+    if (!this.nav) return;
+    this.nav.innerHTML = '';
+    this.dots = this.slides.map((_, i) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+      dot.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.goTo(i);
+      });
+      this.nav.appendChild(dot);
+      return dot;
+    });
+  }
+
+  _updateNav() {
+    this.dots.forEach((dot, n) => {
+      const on = n === this.idx;
+      dot.classList.toggle('active', on);
+      dot.setAttribute('aria-current', on ? 'true' : 'false');
+    });
+  }
+
+  /* Keyboard: arrows, space, page keys, home/end */
+  _keyboard() {
+    document.addEventListener('keydown', e => {
+      if (e.target.getAttribute('contenteditable')) return;
+      const fwd = ['ArrowRight','ArrowDown',' ','PageDown'];
+      const bwd = ['ArrowLeft','ArrowUp','PageUp'];
+      if (fwd.includes(e.key))      { e.preventDefault(); this.next(); }
+      else if (bwd.includes(e.key)) { e.preventDefault(); this.prev(); }
+      else if (e.key === 'Home')    { e.preventDefault(); this.go(0); }
+      else if (e.key === 'End')     { e.preventDefault(); this.go(this.total - 1); }
+    });
+  }
+
+  /* Touch/swipe */
+  _touch() {
+    let sx = 0, sy = 0;
+    document.addEventListener('touchstart', e => {
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    }, { passive: true });
+    document.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - sx;
+      const dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 48)
+        dx < 0 ? this.next() : this.prev();
+    }, { passive: true });
+  }
+
+  /* Mouse wheel (throttled) */
+  _wheel() {
+    document.addEventListener('wheel', e => {
+      e.preventDefault();
+      if (this._wheelLock) return;
+      this._wheelLock = true;
+      e.deltaY > 0 ? this.next() : this.prev();
+      setTimeout(() => this._wheelLock = false, 650);
+    }, { passive: false });
+  }
+
+  go(i) {
+    this.idx = Math.max(0, Math.min(i, this.total - 1));
+    this.slides.forEach((s, n) => {
+      const on = n === this.idx;
+      s.classList.toggle('active',  on);
+      s.classList.toggle('visible', on);
+    });
+    const n = String(this.idx + 1).padStart(2,'0');
+    const t = String(this.total).padStart(2,'0');
+    if (this.counter) this.counter.textContent = `${n} / ${t}`;
+    this._updateNav();
+  }
+  goTo(i) { this.go(i); }
+  next() { this.go(this.idx + 1); }
+  prev() { this.go(this.idx - 1); }
+}
+
+/* ================================================
+   INLINE EDITING
+   Hover top-left corner (or press E) to reveal
+   the edit button. Click to toggle contenteditable
+   on all text nodes. Ctrl+S saves to file.
+   ================================================ */
+const editor = {
+  active: false,
+
+  toggle() {
+    this.active = !this.active;
+    const btn = document.getElementById('editToggle');
+    const els = document.querySelectorAll(
+      '.deck-stage h1,.deck-stage h2,.deck-stage h3,' +
+      '.deck-stage p,.deck-stage li,' +
+      '.deck-stage .s-label,.deck-stage .s-title,' +
+      '.deck-stage .co-name,.deck-stage .co-brand,.deck-stage .co-desc,' +
+      '.deck-stage .co-val,.deck-stage .co-sub,' +
+      '.deck-stage .rm-title,.deck-stage .rm-sub,' +
+      '.deck-stage .bc-name,.deck-stage .bc-desc,' +
+      '.deck-stage .bc-label,' +
+      '.deck-stage .sd-title,.deck-stage .sd-sub,' +
+      '.deck-stage .st-val,.deck-stage .st-lbl,.deck-stage .st-sub,' +
+      '.deck-stage .wj-circle-name,' +
+      '.deck-stage .vd-name,.deck-stage .vd-views,' +
+      '.deck-stage .cl-ty,.deck-stage .cl-name'
+    );
+
+    if (this.active) {
+      btn.textContent = 'Done';
+      btn.classList.add('active');
+      els.forEach(el => {
+        el.contentEditable = 'true';
+        el.style.outline = '1px dashed rgba(50,210,180,.5)';
+        el.style.minWidth = '4px';
+        el.style.borderRadius = '3px';
+      });
+    } else {
+      btn.textContent = 'Edit';
+      btn.classList.remove('active');
+      els.forEach(el => {
+        el.contentEditable = 'false';
+        el.style.outline = '';
+        el.style.minWidth = '';
+      });
+      /* Save snapshot to localStorage */
+      try {
+        localStorage.setItem('ap-slides-html', document.getElementById('deckStage').innerHTML);
+      } catch(_) {}
+    }
+  }
+};
+
+/* Hotzone hover logic with 400ms grace period */
+const hotzone    = document.getElementById('editHotzone');
+const editToggle = document.getElementById('editToggle');
+let   hideTimer  = null;
+
+const showBtn = () => { clearTimeout(hideTimer); editToggle.classList.add('show'); };
+const hideBtn = () => {
+  hideTimer = setTimeout(() => {
+    if (!editor.active) editToggle.classList.remove('show');
+  }, 400);
+};
+
+hotzone.addEventListener('mouseenter', showBtn);
+hotzone.addEventListener('mouseleave', hideBtn);
+hotzone.addEventListener('click', () => editor.toggle());
+editToggle.addEventListener('mouseenter', showBtn);
+editToggle.addEventListener('mouseleave', hideBtn);
+editToggle.addEventListener('click', () => editor.toggle());
+
+/* E key shortcut */
+document.addEventListener('keydown', e => {
+  if ((e.key === 'e' || e.key === 'E') && !e.target.getAttribute('contenteditable'))
+    editor.toggle();
+});
+
+/* Ctrl+S — download updated HTML */
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    const blob = new Blob([document.documentElement.outerHTML], { type:'text/html' });
+    const a    = Object.assign(document.createElement('a'), {
+      href: URL.createObjectURL(blob),
+      download: 'index.html'
+    });
+    a.click(); URL.revokeObjectURL(a.href);
+  }
+});
+
+/* ================================================
+   INIT
+   ================================================ */
+const deck = new Deck();
+
+/* ================================================
+   EXPORT MODE  — activated by ?export=1 in URL
+   ================================================ */
+(function initExportMode() {
+  if (!/[?&]export=1/.test(location.search)) return;
+
+  // Mark body so CSS rules kick in
+  document.body.classList.add('export-mode');
+
+  // Expose goTo so Playwright can navigate slides
+  window._deckGoTo = (i) => deck.go(i);
+
+  /**
+   * window.waitForSlideReady(slideIndex)
+   * ─────────────────────────────────────
+   * Switches to the requested slide, then resolves once:
+   *  1. document.fonts are ready
+   *  2. every <img> in that slide has loaded and decoded
+   *  3. an extra settle delay has passed
+   */
+  window.waitForSlideReady = async function(slideIndex) {
+    // 1. Switch slide (uses the real Deck controller)
+    deck.go(slideIndex);
+
+    // 2. Wait for web fonts
+    await document.fonts.ready;
+
+    // 3. Collect all images in this slide
+    const slides = document.querySelectorAll('.slide');
+    const slide  = slides[slideIndex];
+    if (slide) {
+      const imgs = Array.from(slide.querySelectorAll('img'));
+      await Promise.all(imgs.map(async (img) => {
+        // Already loaded
+        if (img.complete && img.naturalWidth > 0) {
+          try { await img.decode(); } catch (_) {}
+          return;
+        }
+        // Wait for load or error, then decode
+        await new Promise((res) => {
+          img.addEventListener('load',  res, { once: true });
+          img.addEventListener('error', res, { once: true });
+        });
+        try { await img.decode(); } catch (_) {}
+      }));
+    }
+
+    // 4. Settle delay — lets the browser paint after images are ready
+    await new Promise((res) => setTimeout(res, 450));
+  };
+})();
+</script>
+</body>
+</html>
