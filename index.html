@@ -1587,29 +1587,43 @@
     }
 
     /* ==========================================
-       PRESENTATION ANIMATIONS
-       All rules guarded by body:not(.export-mode)
-       — silently no-ops when ?export=1 is set.
+       PRESENTATION ANIMATIONS v2
+       Guards: body:not(.export-mode)
+       Reduced motion: @media block at bottom.
        ========================================== */
 
-    /* ── 1. Slide cross-fade + scale entrance ── */
+    /* ── 1. Slide: cross-fade + scale + soft blur ── */
     body:not(.export-mode) .slide {
-      transform: scale(0.975);
+      transform:scale(0.972);
+      filter:blur(6px);
       transition:
-        opacity   .44s cubic-bezier(0.16,1,0.3,1),
-        transform .44s cubic-bezier(0.16,1,0.3,1),
-        visibility 0s linear .44s;   /* hold visibility during fade-out */
+        opacity   .46s cubic-bezier(0.16,1,0.3,1),
+        transform .46s cubic-bezier(0.16,1,0.3,1),
+        filter    .46s cubic-bezier(0.16,1,0.3,1),
+        visibility 0s linear .46s;
     }
     body:not(.export-mode) .slide.active,
     body:not(.export-mode) .slide.visible {
-      transform: scale(1);
+      transform:scale(1); filter:blur(0px);
       transition:
-        opacity   .44s cubic-bezier(0.16,1,0.3,1),
-        transform .44s cubic-bezier(0.16,1,0.3,1),
-        visibility 0s linear 0s;     /* show instantly on enter */
+        opacity   .46s cubic-bezier(0.16,1,0.3,1),
+        transform .46s cubic-bezier(0.16,1,0.3,1),
+        filter    .46s cubic-bezier(0.16,1,0.3,1),
+        visibility 0s linear 0s;
     }
 
-    /* ── 2. Cover slide — ambient blob / ring motion ── */
+    /* ── 2. Progress bar ── */
+    body:not(.export-mode) #prsProgress {
+      position:fixed; top:0; left:0; width:100%; height:3px;
+      background:linear-gradient(90deg, var(--mint-dk), var(--mint));
+      transform-origin:left center; transform:scaleX(0);
+      transition:transform .44s cubic-bezier(0.16,1,0.3,1);
+      box-shadow:0 0 10px rgba(50,210,180,.45), 0 0 4px rgba(50,210,180,.25);
+      z-index:2000; pointer-events:none; border-radius:0 2px 2px 0;
+    }
+    body.export-mode #prsProgress { display:none; }
+
+    /* ── 3. Cover slide — ambient blob / ring motion ── */
     @keyframes prs-float-a {
       0%,100% { transform:translate(0,0) scale(1); }
       35%     { transform:translate(20px,-14px) scale(1.025); }
@@ -1620,9 +1634,7 @@
       42%     { transform:translate(-17px,13px) scale(1.03); }
       78%     { transform:translate(11px,-9px) scale(0.97); }
     }
-    @keyframes prs-ring-drift {
-      to { transform:rotate(360deg); }
-    }
+    @keyframes prs-ring-drift { to { transform:rotate(360deg); } }
     body:not(.export-mode) .s1-warm  { animation:prs-float-a 14s ease-in-out infinite; }
     body:not(.export-mode) .s1-mint  { animation:prs-float-b 18s ease-in-out infinite; }
     body:not(.export-mode) .s1-blue  { animation:prs-float-a 22s ease-in-out infinite reverse; }
@@ -1632,7 +1644,7 @@
     body:not(.export-mode) .s1-dot1  { animation:prs-float-b 9s ease-in-out infinite; }
     body:not(.export-mode) .s1-dot2  { animation:prs-float-a 12s ease-in-out infinite 2s; }
 
-    /* ── 3. Active nav dot pulse ── */
+    /* ── 4. Nav dot active pulse ── */
     @keyframes prs-dot-pulse {
       0%,100% { box-shadow:0 0 0 0 rgba(50,210,180,.55); }
       60%     { box-shadow:0 0 0 7px rgba(50,210,180,0); }
@@ -1641,40 +1653,41 @@
       animation:prs-dot-pulse 2.4s ease-out infinite;
     }
 
-    /* ── 4. Hover lift — glass info / closing cards ── */
+    /* ── 5. Hover lift + mint glow — glass cards ── */
     body:not(.export-mode) .co-card,
-    body:not(.export-mode) .cl-card {
-      transition:transform .28s cubic-bezier(0.16,1,0.3,1),
-                 box-shadow .28s ease;
+    body:not(.export-mode) .cl-card,
+    body:not(.export-mode) .hs-stat {
+      transition:transform .28s cubic-bezier(0.16,1,0.3,1), box-shadow .28s ease;
     }
     body:not(.export-mode) .co-card:hover {
       transform:translateY(-5px) !important;
-      box-shadow:0 28px 64px rgba(25,22,89,.14),
-                 0 4px 14px rgba(25,22,89,.07) !important;
+      box-shadow:0 28px 64px rgba(25,22,89,.13), 0 4px 14px rgba(25,22,89,.07),
+                 0 0 0 1px rgba(50,210,180,.14), 0 0 32px rgba(50,210,180,.07) !important;
     }
     body:not(.export-mode) .cl-card:hover {
       transform:translateY(-4px) !important;
-      box-shadow:0 24px 56px rgba(25,22,89,.12) !important;
+      box-shadow:0 24px 56px rgba(25,22,89,.12),
+                 0 0 0 1px rgba(50,210,180,.12), 0 0 28px rgba(50,210,180,.06) !important;
+    }
+    body:not(.export-mode) .hs-stat:hover {
+      transform:translateY(-4px) !important;
+      box-shadow:0 22px 52px rgba(25,22,89,.12),
+                 0 0 0 1px rgba(50,210,180,.13), 0 0 24px rgba(50,210,180,.07) !important;
     }
 
-    /* ── 5. Hover zoom — bento gallery tiles ── */
+    /* ── 6. Hover zoom — bento gallery tiles ── */
     body:not(.export-mode) .pw-item {
-      transition:transform .25s cubic-bezier(0.16,1,0.3,1),
-                 box-shadow .25s ease;
+      transition:transform .25s cubic-bezier(0.16,1,0.3,1), box-shadow .25s ease;
     }
     body:not(.export-mode) .pw-item:hover {
-      transform:scale(1.028) !important;
-      z-index:4;
-      box-shadow:0 24px 56px rgba(25,22,89,.20),
-                 0 4px 16px rgba(25,22,89,.10) !important;
+      transform:scale(1.028) !important; z-index:4;
+      box-shadow:0 24px 56px rgba(25,22,89,.20), 0 4px 16px rgba(25,22,89,.10) !important;
     }
 
-    /* ── 6. Slide 11 phone cards — stagger + fan entrance ── */
+    /* ── 7. Slide 11 — phone card stagger + spring tilt reveal ── */
     body:not(.export-mode) .vd-card {
-      opacity:0;
-      transform:translateY(40px);
-      transition:opacity .55s var(--ease),
-                 transform .4s cubic-bezier(0.16,1,0.3,1),
+      opacity:0; transform:translateY(40px);
+      transition:opacity .55s var(--ease), transform .4s cubic-bezier(0.16,1,0.3,1),
                  box-shadow .3s ease;
     }
     body:not(.export-mode) #s11.visible .vd-card            { opacity:1; transform:none; }
@@ -1683,40 +1696,71 @@
     body:not(.export-mode) #s11.visible .vd-card:nth-child(3){ transition-delay:.26s; }
     body:not(.export-mode) #s11.visible .vd-card:hover {
       transform:translateY(-6px);
-      box-shadow:0 30px 68px rgba(25,22,89,.16),
-                 0 4px 16px rgba(25,22,89,.08);
+      box-shadow:0 30px 68px rgba(25,22,89,.16), 0 4px 16px rgba(25,22,89,.08);
     }
-    /* Phone mockups — fan in from sides + tilt */
+    /* Phone: spring tilt from opposite sides (cubic-bezier with overshoot) */
     body:not(.export-mode) .vd-phone.is-reel {
-      transform:translateX(-32px) translateY(26px) rotate(-4deg);
+      transform:translateX(-52px) translateY(44px) rotate(-9deg);
+      transition:opacity .75s var(--ease),
+                 transform .75s cubic-bezier(0.34,1.56,0.64,1) !important;
     }
     body:not(.export-mode) .vd-phone.is-tiktok {
-      transform:translateX(32px) translateY(26px) rotate(4deg);
+      transform:translateX(52px) translateY(44px) rotate(9deg);
+      transition:opacity .75s var(--ease),
+                 transform .75s cubic-bezier(0.34,1.56,0.64,1) !important;
     }
     body:not(.export-mode) .slide.visible .vd-card .vd-phone.is-reel,
     body:not(.export-mode) .slide.visible .vd-card .vd-phone.is-tiktok {
       opacity:1; transform:none;
     }
 
-    /* ── 7. SWOT center — breathe pulse ── */
+    /* ── 8. Word-by-word title reveal ── */
+    .prs-word-container {
+      opacity:1 !important; transform:none !important; transition:none !important;
+    }
+    .prs-word {
+      display:inline-block; opacity:0; transform:translateY(18px);
+      transition:opacity .52s cubic-bezier(0.16,1,0.3,1),
+                 transform .52s cubic-bezier(0.16,1,0.3,1);
+    }
+    .slide.visible .prs-word { opacity:1; transform:none; }
+
+    /* ── 9. SWOT: breathe pulse + node hover ── */
     @keyframes prs-breathe {
-      0%,100% { box-shadow:0 20px 60px rgba(25,22,89,.28),
-                            0 0 0 0 rgba(50,210,180,.22); }
-      50%     { box-shadow:0 28px 80px rgba(25,22,89,.36),
-                            0 0 0 22px rgba(50,210,180,0); }
+      0%,100% { box-shadow:0 20px 60px rgba(25,22,89,.28), 0 0 0 0 rgba(50,210,180,.22); }
+      50%     { box-shadow:0 28px 80px rgba(25,22,89,.36), 0 0 0 22px rgba(50,210,180,0); }
     }
     body:not(.export-mode) #s15.visible .sw-center {
       animation:prs-breathe 3.4s ease-in-out infinite .7s;
     }
-
-    /* ── 8. SWOT nodes — hover scale ── */
     body:not(.export-mode) .sw-node {
-      transition:transform .3s cubic-bezier(0.16,1,0.3,1),
-                 box-shadow .3s ease;
+      transition:transform .3s cubic-bezier(0.16,1,0.3,1), box-shadow .3s ease;
     }
     body:not(.export-mode) .sw-node:hover {
       transform:scale(1.06) !important;
       box-shadow:0 28px 64px rgba(25,22,89,.18) !important;
+    }
+
+    /* ── 10. prefers-reduced-motion ── */
+    @media (prefers-reduced-motion:reduce) {
+      body:not(.export-mode) .slide {
+        filter:none !important; transform:none !important;
+        transition:opacity .15s ease, visibility 0s linear .15s !important;
+      }
+      body:not(.export-mode) .slide.active,
+      body:not(.export-mode) .slide.visible {
+        transition:opacity .15s ease, visibility 0s linear 0s !important;
+      }
+      body:not(.export-mode) #prsProgress { transition:none !important; }
+      body:not(.export-mode) .s1-warm, body:not(.export-mode) .s1-mint,
+      body:not(.export-mode) .s1-blue, body:not(.export-mode) .s1-ring,
+      body:not(.export-mode) .s1-ring2,body:not(.export-mode) .s1-ring3,
+      body:not(.export-mode) .s1-dot1, body:not(.export-mode) .s1-dot2,
+      body:not(.export-mode) .dot-nav button.active,
+      body:not(.export-mode) #s15.visible .sw-center { animation:none !important; }
+      .prs-word { opacity:1 !important; transform:none !important; transition:none !important; }
+      body:not(.export-mode) .vd-phone.is-reel,
+      body:not(.export-mode) .vd-phone.is-tiktok { transition:none !important; }
     }
   </style>
 </head>
@@ -1725,6 +1769,9 @@
 <!-- Inline edit hotzone -->
 <div class="edit-hotzone" id="editHotzone"></div>
 <button class="edit-toggle" id="editToggle">Edit</button>
+
+<!-- Progress bar (presentation mode only — hidden in export) -->
+<div id="prsProgress"></div>
 
 <!-- ================================================
      DECK
@@ -2962,6 +3009,149 @@ const deck = new Deck();
     // 4. Settle delay — lets the browser paint after images are ready
     await new Promise((res) => setTimeout(res, 450));
   };
+})();
+
+/* ================================================
+   PRESENTATION EFFECTS — progress bar, word-by-word,
+   count-up. Guards: skipped in export mode and when
+   prefers-reduced-motion is set.
+   ================================================ */
+(function initPresentationEffects() {
+  var isExport = document.body.classList.contains('export-mode');
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (isExport || reducedMotion) return;
+
+  /* ── 1. Progress bar ─────────────────────────── */
+  var progressEl = document.getElementById('prsProgress');
+  function updateProgress(idx) {
+    if (!progressEl) return;
+    var total = deck.slides.length;
+    var frac = total > 1 ? idx / (total - 1) : 1;
+    progressEl.style.transform = 'scaleX(' + frac + ')';
+  }
+
+  /* ── 2. Word-by-word reveal ──────────────────── */
+  function initWordReveal() {
+    var selectors = '.cv-h1, .cv-h1b, .rm-title, .sw-title';
+    var BASE_DELAY = 0.08;
+    var STEP = 0.065;
+
+    document.querySelectorAll(selectors).forEach(function(el) {
+      var text = el.textContent.trim();
+      if (!text) return;
+      var words = text.split(/\s+/).filter(Boolean);
+      if (words.length < 2) return;   // single word — no point splitting
+
+      el.innerHTML = words.map(function(word, i) {
+        var delay = (BASE_DELAY + i * STEP).toFixed(3);
+        return '<span class="prs-word" style="transition-delay:' + delay + 's">'
+               + word + '</span>';
+      }).join(' ');
+      el.classList.add('prs-word-container');
+    });
+  }
+
+  /* ── 3. Count-up ─────────────────────────────── */
+  var visited = new Set();
+
+  function easeOutExpo(t) {
+    return t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  }
+
+  function countUp(el, target, duration, formatter) {
+    var start = performance.now();
+    (function step(now) {
+      var t = Math.min((now - start) / duration, 1);
+      var val = Math.round(easeOutExpo(t) * target);
+      el.textContent = formatter(val);
+      if (t < 1) requestAnimationFrame(step);
+      else el.textContent = formatter(target);
+    })(start);
+  }
+
+  function fmtPlain(n) { return String(n); }
+  function fmtComma(n) { return n.toLocaleString('en-US'); }
+
+  function triggerCountUp(slide) {
+    var id = slide.id;
+
+    /* Slide 6 — hero stats (24, 101, 11, 7) */
+    if (id === 's6' && !visited.has('s6')) {
+      visited.add('s6');
+      setTimeout(function() {
+        slide.querySelectorAll('.hs-stat-val').forEach(function(el) {
+          // Locate the leading text node that holds the number
+          var textNode = null;
+          for (var j = 0; j < el.childNodes.length; j++) {
+            var cn = el.childNodes[j];
+            if (cn.nodeType === Node.TEXT_NODE && cn.textContent.trim()) {
+              textNode = cn; break;
+            }
+          }
+          if (!textNode) return;
+          var target = parseInt(textNode.textContent.replace(/\D/g, ''), 10);
+          if (isNaN(target)) return;
+          var span = document.createElement('span');
+          span.textContent = '0';
+          textNode.replaceWith(span);
+          countUp(span, target, 1200, fmtPlain);
+        });
+      }, 280);
+    }
+
+    /* Slide 11 — total video views (704,992) */
+    if (id === 's11' && !visited.has('s11')) {
+      visited.add('s11');
+      setTimeout(function() {
+        var m = slide.querySelector('.vd-bignum .m');
+        if (!m) return;
+        var target = parseInt(m.textContent.replace(/\D/g, ''), 10);
+        if (isNaN(target)) return;
+        m.textContent = '0';
+        countUp(m, target, 1800, fmtComma);
+      }, 280);
+    }
+  }
+
+  /* ── 4. Patch deck.go ────────────────────────── */
+  var _origGo = deck.go.bind(deck);
+  deck.go = function(i) {
+    _origGo(i);
+    updateProgress(deck.idx);
+    var activeSlide = deck.slides[deck.idx];
+    if (activeSlide) triggerCountUp(activeSlide);
+  };
+
+  /* ── 5. Bootstrap ────────────────────────────── */
+  initWordReveal();
+
+  // Slide 1 already has .visible when we inject spans — force the
+  // from-hidden animation by overriding with inline !important,
+  // flushing layout, then releasing in the next frame.
+  var initSlide = deck.slides[deck.idx];
+  if (initSlide) {
+    var initWords = Array.from(initSlide.querySelectorAll('.prs-word'));
+    if (initWords.length) {
+      initWords.forEach(function(w) {
+        w.style.setProperty('opacity',    '0',                  'important');
+        w.style.setProperty('transform',  'translateY(18px)',   'important');
+        w.style.setProperty('transition', 'none',               'important');
+      });
+      initSlide.getBoundingClientRect(); // force reflow so browser sees the hidden state
+      requestAnimationFrame(function() {
+        initWords.forEach(function(w) {
+          w.style.removeProperty('opacity');
+          w.style.removeProperty('transform');
+          w.style.removeProperty('transition');
+          // CSS .slide.visible .prs-word { opacity:1 } now takes over → transition fires
+        });
+      });
+    }
+  }
+
+  // Set initial progress (slide 0 → scaleX(0))
+  updateProgress(deck.idx);
+
 })();
 </script>
 </body>
