@@ -1317,6 +1317,79 @@
       #s14 .reveal, #s14 .reveal-scale { opacity:1 !important; transform:none !important; transition:none !important; }
     }
 
+    /* ── Slides 13–14: gallery tile float + spotlight overlay ── */
+    /* Float canvas — oversized so animation never clips */
+    #s13 .pw-inner, #s14 .pw-inner {
+      position:absolute; inset:-8px;
+      will-change:transform; transform:translateZ(0);
+    }
+    body.export-mode #s13 .pw-inner,
+    body.export-mode #s14 .pw-inner { inset:0 !important; }
+    @media print {
+      #s13 .pw-inner, #s14 .pw-inner { inset:0 !important; }
+    }
+    /* Spotlight overlay — JS-driven radial gradient */
+    .pw-overlay {
+      position:absolute; inset:0; z-index:3; border-radius:inherit;
+      pointer-events:none; opacity:0; transition:opacity .28s ease;
+    }
+    body.export-mode .pw-overlay { display:none !important; }
+    /* Float keyframes — three offset phases */
+    @keyframes pw-float-a {
+      0%,100% { transform:translateY(0) translateX(0); }
+      35%     { transform:translateY(-5px) translateX(2px); }
+      70%     { transform:translateY(3px) translateX(-2px); }
+    }
+    @keyframes pw-float-b {
+      0%,100% { transform:translateY(0) translateX(0); }
+      40%     { transform:translateY(-4px) translateX(-2px); }
+      72%     { transform:translateY(4px) translateX(2px); }
+    }
+    @keyframes pw-float-c {
+      0%,100% { transform:translateY(0) translateX(0); }
+      30%     { transform:translateY(-5px) translateX(3px); }
+      65%     { transform:translateY(3px) translateX(-2px); }
+    }
+    /* Cycle 3 float phases across tiles via nth-child */
+    body:not(.export-mode) #s13.visible .pw-item:nth-child(3n+1) .pw-inner,
+    body:not(.export-mode) #s14.visible .pw-item:nth-child(3n+1) .pw-inner { animation:pw-float-a 8.5s ease-in-out infinite; }
+    body:not(.export-mode) #s13.visible .pw-item:nth-child(3n+2) .pw-inner,
+    body:not(.export-mode) #s14.visible .pw-item:nth-child(3n+2) .pw-inner { animation:pw-float-b 7.8s ease-in-out infinite -3.1s; }
+    body:not(.export-mode) #s13.visible .pw-item:nth-child(3n) .pw-inner,
+    body:not(.export-mode) #s14.visible .pw-item:nth-child(3n) .pw-inner   { animation:pw-float-c 9.2s ease-in-out infinite -5.8s; }
+    /* Enhanced stagger entry: translateY+scale replaces flat reveal-scale */
+    body:not(.export-mode) #s13 .pw-item,
+    body:not(.export-mode) #s14 .pw-item {
+      opacity:0; transform:translateY(22px) scale(0.93);
+      transition:opacity .52s var(--ease), transform .48s var(--ease), box-shadow .28s ease;
+    }
+    body:not(.export-mode) #s13.visible .pw-item,
+    body:not(.export-mode) #s14.visible .pw-item { opacity:1; transform:translateY(0) scale(1); }
+    /* Override global !important hover for S13/14 —
+       use ID specificity to win; JS handles 3D tilt on .pw-inner */
+    body:not(.export-mode) #s13 .pw-item:hover,
+    body:not(.export-mode) #s14 .pw-item:hover {
+      transform:scale(1.032) translateY(-7px) !important;
+      transition-delay:0s !important;
+      z-index:5 !important;
+      box-shadow:
+        0 24px 62px rgba(25,22,89,.18),
+        0 4px 16px rgba(25,22,89,.09),
+        0 0 0 1.5px rgba(50,210,180,.30),
+        0 0 36px rgba(50,210,180,.12) !important;
+    }
+    /* Banners: gentler zoom — thin tiles look bad with too much scale */
+    body:not(.export-mode) #s13 .pw-banner:hover,
+    body:not(.export-mode) #s14 .pw-banner:hover {
+      transform:scale(1.018) translateY(-4px) !important;
+      box-shadow:
+        0 14px 40px rgba(25,22,89,.15),
+        0 0 0 1px rgba(50,210,180,.24),
+        0 0 22px rgba(50,210,180,.09) !important;
+    }
+    body:not(.export-mode) #s13 .pw-item { cursor:pointer; }
+    body:not(.export-mode) #s14 .pw-item { cursor:pointer; }
+
     /* ==========================================
        SLIDE 15 — SWOT ANALYSIS (Circular layout)
        ========================================== */
@@ -2037,6 +2110,11 @@
       body:not(.export-mode) #s12 .gr-inner { animation:none !important; }
       body:not(.export-mode) #s12 .gr-ph { cursor:default !important; }
       .gr-overlay { opacity:0 !important; transition:none !important; }
+      body:not(.export-mode) #s13 .pw-inner,
+      body:not(.export-mode) #s14 .pw-inner { animation:none !important; }
+      body:not(.export-mode) #s13 .pw-item,
+      body:not(.export-mode) #s14 .pw-item { cursor:default !important; }
+      .pw-overlay { opacity:0 !important; transition:none !important; }
     }
   </style>
 </head>
@@ -2789,66 +2867,87 @@
       <div class="pw-wall stagger">
         <!-- ── Top section (rows 1–3): Cover · Wide · Cover ── -->
         <div class="pw-item pw-cover reveal-scale" style="transition-delay:.04s">
-          <img src="assets/portfolio-wall/cover-01.png" alt="ปกบทความ 1" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/cover-01.png" alt="ปกบทความ 1" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">cover-01.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <div class="pw-item pw-wide reveal-scale" style="transition-delay:.08s">
-
-          <img src="assets/portfolio-wall/wide-01.png" alt="ภาพประกอบบทความ 1" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/wide-01.png" alt="ภาพประกอบบทความ 1" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">wide-01.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <div class="pw-item pw-cover reveal-scale" style="transition-delay:.12s">
-
-          <img src="assets/portfolio-wall/cover-02.png" alt="ปกบทความ 2" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/cover-02.png" alt="ปกบทความ 2" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">cover-02.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <!-- Dense fills gap at col 5-8, row 3 -->
         <div class="pw-item pw-banner reveal-scale" style="transition-delay:.16s">
-
-          <img src="assets/portfolio-wall/banner-01.png" alt="banner 1" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/banner-01.png" alt="banner 1" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">banner-01.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <!-- ── Middle section (rows 4–5): three wides ── -->
         <div class="pw-item pw-wide reveal-scale" style="transition-delay:.20s">
-
-          <img src="assets/portfolio-wall/wide-02.png" alt="ภาพประกอบบทความ 2" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/wide-02.png" alt="ภาพประกอบบทความ 2" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">wide-02.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <div class="pw-item pw-wide reveal-scale" style="transition-delay:.24s">
-
-          <img src="assets/portfolio-wall/visual-01.png" alt="ภาพประกอบบทความ 3" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/visual-01.png" alt="ภาพประกอบบทความ 3" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">visual-01.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <div class="pw-item pw-wide reveal-scale" style="transition-delay:.28s">
-
-          <img src="assets/portfolio-wall/wide-03.png" alt="ภาพประกอบบทความ 4" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/wide-03.png" alt="ภาพประกอบบทความ 4" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">wide-03.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <!-- ── Bottom strip (row 6): three banners ── -->
         <div class="pw-item pw-banner reveal-scale" style="transition-delay:.32s">
-
-          <img src="assets/portfolio-wall/banner-02.png" alt="banner 2" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/banner-02.png" alt="banner 2" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">banner-02.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <div class="pw-item pw-banner reveal-scale" style="transition-delay:.36s">
-
-          <img src="assets/portfolio-wall/banner-03.png" alt="banner 3" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/banner-03.png" alt="banner 3" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">banner-03.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <div class="pw-item pw-banner reveal-scale" style="transition-delay:.40s">
-
-          <img src="assets/portfolio-wall/banner-04.png" alt="banner 4" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/banner-04.png" alt="banner 4" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">banner-04.png</div>
+          <div class="pw-overlay"></div>
         </div>
       </div>
     </section>
@@ -2868,67 +2967,87 @@
       <div class="pw-wall stagger">
         <!-- ── Top section (rows 1–3): Cover · Wide · Cover ── -->
         <div class="pw-item pw-cover reveal-scale" style="transition-delay:.04s">
-
-          <img src="assets/portfolio-wall/cover-03.png" alt="ปกบทความ 3" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/cover-03.png" alt="ปกบทความ 3" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">cover-03.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <div class="pw-item pw-wide reveal-scale" style="transition-delay:.08s">
-
-          <img src="assets/portfolio-wall/wide-04.png" alt="ภาพประกอบบทความ 5" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/wide-04.png" alt="ภาพประกอบบทความ 5" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">wide-04.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <div class="pw-item pw-cover reveal-scale" style="transition-delay:.12s">
-
-          <img src="assets/portfolio-wall/cover-04.png" alt="ปกบทความ 4" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/cover-04.png" alt="ปกบทความ 4" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">cover-04.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <!-- Dense fills gap at col 5-8, row 3 -->
         <div class="pw-item pw-banner reveal-scale" style="transition-delay:.16s">
-
-          <img src="assets/portfolio-wall/banner-05.png" alt="banner 5" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/banner-05.png" alt="banner 5" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">banner-05.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <!-- ── Middle section (rows 4–5): three wides ── -->
         <div class="pw-item pw-wide reveal-scale" style="transition-delay:.20s">
-
-          <img src="assets/portfolio-wall/wide-05.png" alt="ภาพประกอบบทความ 6" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/wide-05.png" alt="ภาพประกอบบทความ 6" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">wide-05.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <div class="pw-item pw-wide reveal-scale" style="transition-delay:.24s">
-
-          <img src="assets/portfolio-wall/visual-02.png" alt="ภาพประกอบบทความ 7" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/visual-02.png" alt="ภาพประกอบบทความ 7" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">visual-02.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <div class="pw-item pw-wide reveal-scale" style="transition-delay:.28s">
-
-          <img src="assets/portfolio-wall/wide-06.png" alt="ภาพประกอบบทความ 8" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/wide-06.png" alt="ภาพประกอบบทความ 8" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">wide-06.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <!-- ── Bottom strip (row 6): banner + two visual crops ── -->
         <div class="pw-item pw-banner reveal-scale" style="transition-delay:.32s">
-
-          <img src="assets/portfolio-wall/banner-06.png" alt="banner 6" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/banner-06.png" alt="banner 6" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">banner-06.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <div class="pw-item pw-banner reveal-scale" style="transition-delay:.36s">
-
-          <img src="assets/portfolio-wall/visual-03.png" alt="ภาพประกอบบทความ 9" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/visual-03.png" alt="ภาพประกอบบทความ 9" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">visual-03.png</div>
+          <div class="pw-overlay"></div>
         </div>
         <div class="pw-item pw-banner reveal-scale" style="transition-delay:.40s">
-
-          <img src="assets/portfolio-wall/visual-04.png" alt="ภาพประกอบบทความ 10" class="ph-asset"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pw-inner">
+            <img src="assets/portfolio-wall/visual-04.png" alt="ภาพประกอบบทความ 10" class="ph-asset"
+                 onerror="this.style.display='none';this.closest('.pw-item').querySelector('.pw-lbl').style.display='flex'">
+          </div>
           <div class="pw-lbl">visual-04.png</div>
+          <div class="pw-overlay"></div>
         </div>
       </div>
     </section>
@@ -4063,6 +4182,92 @@ const deck = new Deck();
       card.style.boxShadow = '';
       card.style.zIndex    = '';
       setTimeout(function() { card.style.transition = ''; }, 540);
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+  });
+})();
+
+/* ================================================
+   SLIDES 13 & 14 — Gallery tile: 3D tilt + spotlight
+   CSS handles scale/lift/shadow/glow via :hover (ID specificity override).
+   JS handles rAF-lerp 3D tilt on .pw-inner + radial spotlight on .pw-overlay.
+   ================================================ */
+(function initS1314Effects() {
+  var isExport      = document.body.classList.contains('export-mode');
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (isExport || reducedMotion) return;
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  document.querySelectorAll('#s13 .pw-item, #s14 .pw-item').forEach(function(card) {
+    var inner   = card.querySelector('.pw-inner');
+    var overlay = card.querySelector('.pw-overlay');
+    if (!inner) return;
+
+    var isBanner   = card.classList.contains('pw-banner');
+    var MAX_TILT   = isBanner ? 2 : 4;
+    var LIFT_Y     = isBanner ? -3 : -5;    /* extra lift on inner for depth feel */
+    var SPOT_ALPHA = isBanner ? '.13' : '.17';
+    var SPOT_STOP  = isBanner ? '58%' : '50%';
+
+    var isHovering = false;
+    var rx = 0, ry = 0, trx = 0, try_ = 0, ly = 0;
+    var rafId = null;
+
+    function tick() {
+      var f  = isHovering ? 0.14 : 0.09;
+      rx     = lerp(rx, trx,                         f);
+      ry     = lerp(ry, try_,                        f);
+      ly     = lerp(ly, isHovering ? LIFT_Y : 0,    f);
+
+      inner.style.transform =
+        'perspective(700px)' +
+        ' rotateX(' + rx.toFixed(2) + 'deg)' +
+        ' rotateY(' + ry.toFixed(2) + 'deg)' +
+        ' translateY(' + ly.toFixed(1) + 'px)';
+
+      var settled =
+        !isHovering &&
+        Math.abs(rx) < 0.04 && Math.abs(ry) < 0.04 && Math.abs(ly) < 0.1;
+
+      if (settled) {
+        inner.style.transform          = '';
+        inner.style.animationPlayState = ''; // resume idle float
+        if (overlay) { overlay.style.opacity = '0'; overlay.style.background = ''; }
+        rafId = null;
+      } else {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    card.addEventListener('mouseenter', function() {
+      isHovering = true;
+      inner.style.animationPlayState = 'paused';
+      card.style.transitionDelay = '0s'; // suppress stagger delay on hover
+      if (overlay) overlay.style.opacity = '1';
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      var x    = (e.clientX - rect.left) / rect.width;
+      var y    = (e.clientY - rect.top)  / rect.height;
+      trx  = Math.max(-MAX_TILT, Math.min(MAX_TILT, -(y - 0.5) * MAX_TILT * 2));
+      try_ = Math.max(-MAX_TILT, Math.min(MAX_TILT,  (x - 0.5) * MAX_TILT * 2));
+      if (overlay) {
+        overlay.style.background =
+          'radial-gradient(circle at ' + (x * 100).toFixed(1) + '% ' + (y * 100).toFixed(1) + '%,' +
+          'rgba(255,255,255,' + SPOT_ALPHA + ') 0%,rgba(255,255,255,0) ' + SPOT_STOP + ')';
+      }
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+
+    card.addEventListener('mouseleave', function() {
+      isHovering = false; trx = 0; try_ = 0;
+      // Keep delay:0s during leave transition; restore after settle
+      setTimeout(function() {
+        if (!isHovering) card.style.transitionDelay = '';
+      }, 560);
       if (!rafId) rafId = requestAnimationFrame(tick);
     });
   });
