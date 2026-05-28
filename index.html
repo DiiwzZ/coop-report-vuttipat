@@ -819,9 +819,25 @@
       color:rgba(25,22,89,.28);
     }
 
+    /* Decorative ring — background motion element behind hero number */
+    .hs-ring {
+      position:absolute; left:28px; top:50%;
+      transform:translateY(-50%);
+      width:580px; height:580px; border-radius:50%;
+      border:1px solid rgba(50,210,180,.10);
+      pointer-events:none; z-index:1;
+    }
+    .hs-ring::after {
+      content:''; position:absolute; inset:-22px;
+      border-radius:50%;
+      border:1px dashed rgba(50,210,180,.07);
+    }
+    body.export-mode .hs-ring { display:none !important; }
+
     /* PDF — collapse stagger */
     @media print {
       .hs-stat:nth-child(2), .hs-stat:nth-child(4) { transform:none !important; }
+      .hs-ring { display:none !important; }
     }
 
     /* ==========================================
@@ -1868,6 +1884,10 @@
     body:not(.export-mode) .hs-stat {
       transition:transform .28s cubic-bezier(0.16,1,0.3,1), box-shadow .28s ease;
     }
+    /* S6 stat cards: JS lerp owns transform — remove CSS transition on transform */
+    body:not(.export-mode) #s6 .hs-stat {
+      transition: box-shadow .32s ease;
+    }
     body:not(.export-mode) .co-card:hover {
       transform:translateY(-5px) !important;
       box-shadow:0 28px 64px rgba(25,22,89,.13), 0 4px 14px rgba(25,22,89,.07),
@@ -1878,10 +1898,12 @@
       box-shadow:0 24px 56px rgba(25,22,89,.12),
                  0 0 0 1px rgba(50,210,180,.12), 0 0 28px rgba(50,210,180,.06) !important;
     }
+    /* .hs-stat:hover — transform handled by JS rAF lerp for S6 */
     body:not(.export-mode) .hs-stat:hover {
-      transform:translateY(-4px) !important;
-      box-shadow:0 22px 52px rgba(25,22,89,.12),
-                 0 0 0 1px rgba(50,210,180,.13), 0 0 24px rgba(50,210,180,.07) !important;
+      box-shadow:0 28px 64px rgba(25,22,89,.14),
+                 0 4px 14px rgba(25,22,89,.07),
+                 0 0 0 1px rgba(50,210,180,.18),
+                 0 0 32px rgba(50,210,180,.09) !important;
     }
 
     /* ── 6. Hover zoom — bento gallery tiles ── */
@@ -1934,7 +1956,36 @@
     }
     .slide.visible .prs-word { opacity:1; transform:none; }
 
-    /* ── 9. Section Dividers 5 & 8 — Gate reveal + parallax float ── */
+    /* ── 9. Slide 6 — Hero glow pulse + ring rotate + stat cursor ── */
+
+    /* Glow blob slow breathe */
+    @keyframes hs-glow-breathe {
+      0%,100% { transform:translateY(-50%) scale(1);    opacity:.75; }
+      50%     { transform:translateY(-50%) scale(1.08); opacity:1;   }
+    }
+    /* Decorative ring slow rotation */
+    @keyframes hs-ring-spin {
+      from { transform:translateY(-50%) rotate(  0deg); }
+      to   { transform:translateY(-50%) rotate(360deg); }
+    }
+    /* Hero number subtle mint glow filter pulse */
+    @keyframes hs-num-glow {
+      0%,100% { filter:none; }
+      50%     { filter:drop-shadow(0 0 22px rgba(50,210,180,.20))
+                       drop-shadow(0 0 52px rgba(50,210,180,.09)); }
+    }
+    body:not(.export-mode) #s6.visible .hs-glow {
+      animation: hs-glow-breathe 6s ease-in-out infinite;
+    }
+    body:not(.export-mode) #s6.visible .hs-ring {
+      animation: hs-ring-spin 80s linear infinite; /* barely-perceptible rotation */
+    }
+    body:not(.export-mode) #s6.visible .hs-hero-num {
+      animation: hs-num-glow 4.5s ease-in-out infinite 1.0s;
+    }
+    body:not(.export-mode) #s6 .hs-stat { cursor:pointer; }
+
+    /* ── 10. Section Dividers 5 & 8 — Gate reveal + parallax float ── */
 
     /* Left mint bar: draw down from top on slide enter */
     body:not(.export-mode) .sd5-bar {
@@ -2198,6 +2249,11 @@
       .pw-overlay { opacity:0 !important; transition:none !important; }
       .sw-line { opacity:1 !important; transition:none !important; }
       body:not(.export-mode) #s15 .sw-node { cursor:default !important; }
+      /* S6 hero glow / ring / number — kill all animation */
+      body:not(.export-mode) #s6 .hs-glow,
+      body:not(.export-mode) #s6 .hs-ring,
+      body:not(.export-mode) #s6 .hs-hero-num { animation:none !important; filter:none !important; }
+      body:not(.export-mode) #s6 .hs-stat { cursor:default !important; }
       /* Section dividers: instant static state */
       body:not(.export-mode) #s5 .sd5-bar,
       body:not(.export-mode) #s8 .sd5-bar { transform: none !important; transition: none !important; }
@@ -2501,6 +2557,7 @@
 
       <!-- Background decoration -->
       <div class="hs-glow"></div>
+      <div class="hs-ring"></div>
 
       <!-- Header -->
       <div class="on-head stagger">
@@ -2514,7 +2571,7 @@
       <!-- Hero stat — left -->
       <div class="hs-hero stagger">
         <div class="hs-hero-lbl reveal">Video Views</div>
-        <div class="hs-hero-num reveal">704K<span class="sf">+</span></div>
+        <div class="hs-hero-num reveal"><span class="s6-hero-num">704K</span><span class="sf">+</span></div>
         <div class="hs-hero-sub reveal">รวม Facebook Reels + TikTok</div>
         <div class="hs-hero-rule reveal"></div>
       </div>
@@ -2524,25 +2581,25 @@
 
         <div class="hs-stat reveal-scale">
           <div class="hs-stat-lbl">Articles</div>
-          <div class="hs-stat-val">24</div>
+          <div class="hs-stat-val"><span class="s6-stat-num" data-target="24" data-dur="900">24</span></div>
           <div class="hs-stat-sub">บทความแนะแนวทั้งหมด</div>
         </div>
 
         <div class="hs-stat reveal-scale" style="transition-delay:.10s">
           <div class="hs-stat-lbl">Graphics</div>
-          <div class="hs-stat-val">101<span class="m">+</span></div>
+          <div class="hs-stat-val"><span class="s6-stat-num" data-target="101" data-dur="1100">101</span><span class="m">+</span></div>
           <div class="hs-stat-sub">ภาพประกอบและ visual assets</div>
         </div>
 
         <div class="hs-stat reveal-scale" style="transition-delay:.20s">
           <div class="hs-stat-lbl">Short-form Videos</div>
-          <div class="hs-stat-val">11</div>
+          <div class="hs-stat-val"><span class="s6-stat-num" data-target="11" data-dur="800">11</span></div>
           <div class="hs-stat-sub">Facebook Reels + TikTok</div>
         </div>
 
         <div class="hs-stat reveal-scale" style="transition-delay:.30s">
           <div class="hs-stat-lbl">Facebook Posts</div>
-          <div class="hs-stat-val">7</div>
+          <div class="hs-stat-val"><span class="s6-stat-num" data-target="7" data-dur="700">7</span></div>
           <div class="hs-stat-sub">Facebook Infographic</div>
         </div>
 
@@ -4026,6 +4083,124 @@ const deck = new Deck();
 
     card.style.cursor = 'pointer';
   });
+})();
+
+/* ================================================
+   SLIDE 6 — Hero count-up + ring glow + stat card 3D tilt
+   ================================================ */
+(function initS6Effects() {
+  var isExport      = document.body.classList.contains('export-mode');
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (isExport || reducedMotion) return;
+
+  /* ── Easing + count-up helper ── */
+  function easeOutExpo(t) { return t >= 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+  function countUp(el, target, duration, fmt) {
+    var start = performance.now();
+    (function step(now) {
+      var t  = Math.min(1, (now - start) / duration);
+      el.textContent = fmt(Math.round(easeOutExpo(t) * target));
+      if (t < 1) requestAnimationFrame(step);
+    })(start);
+  }
+
+  var s6CountedUp = false;
+  function triggerS6CountUp() {
+    if (s6CountedUp) return;
+    s6CountedUp = true;
+
+    /* Hero: 0 → 704K */
+    var heroEl = document.querySelector('#s6 .s6-hero-num');
+    if (heroEl) {
+      setTimeout(function() {
+        heroEl.textContent = '0K';
+        countUp(heroEl, 704, 1800, function(n) { return n + 'K'; });
+      }, 280);
+    }
+
+    /* Stat cards: 24 / 101 / 11 / 7 */
+    document.querySelectorAll('#s6 .s6-stat-num').forEach(function(el, idx) {
+      var target = parseInt(el.getAttribute('data-target') || '0', 10);
+      var dur    = parseInt(el.getAttribute('data-dur')    || '900', 10);
+      setTimeout(function() {
+        el.textContent = '0';
+        countUp(el, target, dur, function(n) { return String(n); });
+      }, 420 + idx * 90);
+    });
+  }
+
+  /* ── rAF-lerp 3D tilt on stat cards ── */
+  var MAX_TILT = 4, LIFT_TARGET = -8, SCALE_TARGET = 1.018;
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  document.querySelectorAll('#s6 .hs-stat').forEach(function(card, idx) {
+    /* Cards at index 1 & 3 (nth-child 2 & 4) carry translateY(26px) layout offset */
+    var baseY = (idx % 2 === 1) ? 26 : 0;
+    var isHovering = false;
+    var rx = 0, ry = 0, trx = 0, try_ = 0;
+    var currentLift = 0, currentScale = 1;
+    var rafId = null;
+
+    function tick() {
+      var f  = isHovering ? 0.14 : 0.10;
+      rx     = lerp(rx,     trx,   f);
+      ry     = lerp(ry,     try_,  f);
+      currentLift  = lerp(currentLift,  isHovering ? LIFT_TARGET : 0, f);
+      currentScale = lerp(currentScale, isHovering ? SCALE_TARGET : 1, f);
+
+      card.style.transform =
+        'perspective(700px)' +
+        ' rotateX(' + rx.toFixed(2) + 'deg)' +
+        ' rotateY(' + ry.toFixed(2) + 'deg)' +
+        ' translateY(' + (baseY + currentLift).toFixed(1) + 'px)' +
+        ' scale(' + currentScale.toFixed(4) + ')';
+
+      var settled = !isHovering
+        && Math.abs(rx) < 0.04 && Math.abs(ry) < 0.04
+        && Math.abs(currentLift) < 0.15 && Math.abs(currentScale - 1) < 0.0008;
+
+      if (settled) {
+        /* Restore CSS-controlled base (nth-child offset preserved) */
+        card.style.transform = baseY ? 'translateY(' + baseY + 'px)' : '';
+        card.style.zIndex    = '';
+        rafId = null;
+      } else {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    card.addEventListener('mouseenter', function() {
+      isHovering = true;
+      card.style.zIndex = '5';
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      trx  = Math.max(-MAX_TILT, Math.min(MAX_TILT,
+               -((e.clientY - rect.top)  / rect.height - 0.5) * MAX_TILT * 2));
+      try_ = Math.max(-MAX_TILT, Math.min(MAX_TILT,
+               ((e.clientX - rect.left) / rect.width  - 0.5) * MAX_TILT * 2));
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+    card.addEventListener('mouseleave', function() {
+      isHovering = false;
+      trx = 0; try_ = 0;
+      card.style.zIndex = '';
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    });
+  });
+
+  /* ── Patch deck.go to fire count-up on s6 ── */
+  var _prevGo = deck.go.bind(deck);
+  deck.go = function(i) {
+    _prevGo(i);
+    if (deck.slides[deck.idx] && deck.slides[deck.idx].id === 's6') {
+      triggerS6CountUp();
+    }
+  };
+  if (deck.slides[deck.idx] && deck.slides[deck.idx].id === 's6') {
+    triggerS6CountUp();
+  }
 })();
 
 /* ================================================
