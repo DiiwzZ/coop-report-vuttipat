@@ -701,6 +701,9 @@
       color:var(--navy-50); line-height:1.5;
     }
 
+    /* Split-title spans — each title line as a block for independent reveal */
+    .sd5-t1, .sd5-t2 { display:block; }
+
     /* ==========================================
        SLIDE 6 — HERO STATS (Dynamic / Asymmetric)
        ========================================== */
@@ -1517,6 +1520,8 @@
     .sw-t { border-color:rgba(176,86,64,.22); }
     /* Print / reduced-motion */
     @media print {
+      .sd5-bar   { transform: none !important; }
+      .sd5-bignum { opacity: 1 !important; transform: translateY(-52%) !important; }
       .sw-node, .sw-center {
         opacity:1 !important; transform:none !important; transition:none !important;
       }
@@ -1758,6 +1763,10 @@
       transform: none !important;
       visibility: visible !important;
     }
+    /* Section divider bar & number — always fully visible in export */
+    body.export-mode .sd5-bar   { transform: none !important; }
+    body.export-mode .sd5-bignum { opacity: 1 !important; transform: translateY(-52%) !important; }
+
     /* SWOT circles / nodes / lines */
     body.export-mode .sw-center,
     body.export-mode .sw-node {
@@ -1925,7 +1934,60 @@
     }
     .slide.visible .prs-word { opacity:1; transform:none; }
 
-    /* ── 9. SWOT: breathe pulse + node hover ── */
+    /* ── 9. Section Dividers 5 & 8 — Gate reveal + parallax float ── */
+
+    /* Left mint bar: draw down from top on slide enter */
+    body:not(.export-mode) .sd5-bar {
+      transform: scaleY(0);
+      transform-origin: top center;
+      transition: transform .65s cubic-bezier(0.16,1,0.3,1);
+    }
+    body:not(.export-mode) #s5.visible .sd5-bar,
+    body:not(.export-mode) #s8.visible .sd5-bar { transform: scaleY(1); }
+
+    /* Ghost section number: fade + scale in, slight delay (background layer) */
+    body:not(.export-mode) .sd5-bignum {
+      opacity: 0;
+      transform: translateY(-52%) scale(0.90);
+      transition: opacity .85s var(--ease), transform .85s var(--ease);
+      transition-delay: .30s;
+    }
+    body:not(.export-mode) #s5.visible .sd5-bignum,
+    body:not(.export-mode) #s8.visible .sd5-bignum {
+      opacity: 1;
+      transform: translateY(-52%) scale(1);
+    }
+
+    /* Parallax float keyframes — translate includes the centring offset */
+    @keyframes sd5-blob-drift {
+      0%,100% { transform: translateY(calc(-50% +  0px)) translateX(  0px); }
+      38%     { transform: translateY(calc(-50% - 14px)) translateX( -8px); }
+      70%     { transform: translateY(calc(-50% +  9px)) translateX(  6px); }
+    }
+    @keyframes sd5-ring1-drift {
+      0%,100% { transform: translateY(calc(-50% +  0px)) translateX( 0px); }
+      42%     { transform: translateY(calc(-50% + 10px)) translateX( 7px); }
+      75%     { transform: translateY(calc(-50% -  7px)) translateX(-5px); }
+    }
+    @keyframes sd5-ring2-drift {
+      0%,100% { transform: translateY(calc(-50% + 0px)) translateX(  0px); }
+      33%     { transform: translateY(calc(-50% - 8px)) translateX(  5px); }
+      66%     { transform: translateY(calc(-50% + 6px)) translateX( -4px); }
+    }
+    body:not(.export-mode) #s5.visible .sd5-blob,
+    body:not(.export-mode) #s8.visible .sd5-blob {
+      animation: sd5-blob-drift 10s ease-in-out infinite;
+    }
+    body:not(.export-mode) #s5.visible .sd5-ring1,
+    body:not(.export-mode) #s8.visible .sd5-ring1 {
+      animation: sd5-ring1-drift 8s ease-in-out infinite -3.2s;
+    }
+    body:not(.export-mode) #s5.visible .sd5-ring2,
+    body:not(.export-mode) #s8.visible .sd5-ring2 {
+      animation: sd5-ring2-drift 7s ease-in-out infinite -1.8s;
+    }
+
+    /* ── 10. SWOT: breathe pulse + node hover ── */
     @keyframes prs-breathe {
       0%,100% { box-shadow:0 20px 60px rgba(25,22,89,.28), 0 0 0 0 rgba(50,210,180,.22); }
       50%     { box-shadow:0 28px 80px rgba(25,22,89,.36), 0 0 0 22px rgba(50,210,180,0); }
@@ -2136,6 +2198,17 @@
       .pw-overlay { opacity:0 !important; transition:none !important; }
       .sw-line { opacity:1 !important; transition:none !important; }
       body:not(.export-mode) #s15 .sw-node { cursor:default !important; }
+      /* Section dividers: instant static state */
+      body:not(.export-mode) #s5 .sd5-bar,
+      body:not(.export-mode) #s8 .sd5-bar { transform: none !important; transition: none !important; }
+      body:not(.export-mode) #s5 .sd5-bignum,
+      body:not(.export-mode) #s8 .sd5-bignum { opacity: 1 !important; transform: translateY(-52%) !important; transition: none !important; }
+      body:not(.export-mode) #s5 .sd5-blob,
+      body:not(.export-mode) #s5 .sd5-ring1,
+      body:not(.export-mode) #s5 .sd5-ring2,
+      body:not(.export-mode) #s8 .sd5-blob,
+      body:not(.export-mode) #s8 .sd5-ring1,
+      body:not(.export-mode) #s8 .sd5-ring2 { animation: none !important; }
     }
   </style>
 </head>
@@ -2411,8 +2484,11 @@
       <div class="sd5-inner stagger">
         <div class="s-label reveal">Section 01</div>
         <div class="sd5-line reveal"></div>
-        <h2 class="sd5-title reveal">ผลการ<br>ปฏิบัติงาน</h2>
-        <div class="sd5-sub reveal">สรุปตัวเลขผลงานและกระบวนการทำงาน</div>
+        <h2 class="sd5-title">
+          <span class="sd5-t1 reveal" style="transition-delay:.24s">ผลการ</span>
+          <span class="sd5-t2 reveal" style="transition-delay:.40s">ปฏิบัติงาน</span>
+        </h2>
+        <div class="sd5-sub reveal" style="transition-delay:.56s">สรุปตัวเลขผลงานและกระบวนการทำงาน</div>
       </div>
 
     </section>
@@ -2550,8 +2626,11 @@
       <div class="sd5-inner stagger">
         <div class="s-label reveal">Section 02</div>
         <div class="sd5-line reveal"></div>
-        <h2 class="sd5-title reveal">ผลงานที่<br>ได้ปฏิบัติ</h2>
-        <div class="sd5-sub reveal">ตัวอย่างผลงานจริงในแต่ละประเภทคอนเทนต์</div>
+        <h2 class="sd5-title">
+          <span class="sd5-t1 reveal" style="transition-delay:.24s">ผลงานที่</span>
+          <span class="sd5-t2 reveal" style="transition-delay:.40s">ได้ปฏิบัติ</span>
+        </h2>
+        <div class="sd5-sub reveal" style="transition-delay:.56s">ตัวอย่างผลงานจริงในแต่ละประเภทคอนเทนต์</div>
       </div>
 
     </section>
